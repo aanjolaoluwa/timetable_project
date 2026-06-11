@@ -1,0 +1,27 @@
+flowchart TD
+    A["Administrator Login"] --> B["Upload Academic Dataset (CSV)"]
+    B --> C["System validates dataset columns"]
+    C --> D{"Valid columns?"}
+    D -->|No| E["Display error message"]
+    E --> B
+    D -->|Yes| F["Enter Hard Constraints\n(Natural Language)"]
+    F --> G["NLP Parser processes\nhard constraints"]
+    G --> H["Enter Soft Constraints\n(Natural Language)"]
+    H --> I["NLP Parser processes\nsoft constraints"]
+    I --> J["Click Execute Multi-Algorithm Generation"]
+    J --> K["Load and preprocess dataset"]
+    K --> L["Generate initial timetable\n(greedy heuristic)"]
+    L --> M["Execute Genetic Algorithm"]
+    L --> N["Execute Simulated Annealing"]
+    L --> O["Execute Tabu Search"]
+    M --> P["Compare fitness scores"]
+    N --> P
+    O --> P
+    P --> Q["Select best algorithm result"]
+    Q --> R["Display optimized timetable\nin daily grid view"]
+    R --> S{"Administrator approves?"}
+    S -->|No| T["Manual override adjustments"]
+    T --> U["Re-evaluate fitness"]
+    U --> R
+    S -->|Yes| V["Export timetable as CSV"]
+    V --> W["End"]

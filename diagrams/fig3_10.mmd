@@ -1,0 +1,20 @@
+flowchart TD
+    A["Start Mutation"] --> B["Build lecturer_schedule\nand room_schedule sets"]
+    B --> C["FOR EACH session\nin timetable"]
+    C --> D{"random() > 0.20?\n(80% skip rate)"}
+    D -->|Yes| C
+    D -->|No| E["Remove session from\ncurrent slot/room"]
+    E --> F["Find valid rooms for\ncourse and student count"]
+    F --> G["Shuffle available timeslots"]
+    G --> H{"Found conflict-free\nslot/room?"}
+    H -->|Yes| I["Assign new slot/room"]
+    H -->|No| J["Mark as UNSCHEDULED"]
+    I --> C
+    J --> C
+    C -->|All processed| K["PHASE 2: Recovery"]
+    K --> L["FOR EACH unscheduled session"]
+    L --> M["Try all slot/room combinations"]
+    M --> N{"Assigned?"}
+    N -->|Yes| L
+    N -->|No| L
+    L -->|Done| O["Return mutated timetable"]

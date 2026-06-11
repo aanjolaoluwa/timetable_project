@@ -1,0 +1,10 @@
+graph TD
+    A["Raw Dataset\n(combined_dataset_clean.csv)"] --> B["Load Dataset\n(pandas read_csv)"]
+    B --> C["Clean Column Names\n(strip, uppercase)"]
+    C --> D["Clean Venue Names\n(venue_cleaner.py)"]
+    D --> E["Assign Lecturers\n(lecturer.py)"]
+    E --> F["Clean Student Counts\n(pd.to_numeric)"]
+    F --> G["Map Venue Capacities\n(room_capacities.py)"]
+    G --> H["Remove Invalid Records\n(drop NaN, duplicates)"]
+    H --> I["Remove Impossible Records\n(students > 1.5x capacity)"]
+    I --> J["Final Cleaned Dataset\n(cleaned_dataset.csv)"]

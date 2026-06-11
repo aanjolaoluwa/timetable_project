@@ -1,0 +1,17 @@
+flowchart TD
+    A["Start"] --> B["Generate Initial Population\n(50 random timetables)"]
+    B --> C["Set generation = 0"]
+    C --> D["Evaluate fitness of\neach individual"]
+    D --> E["Sort population by\nfitness (ascending)"]
+    E --> F["Update best solution\nif improvement found"]
+    F --> G{"generation < max_generations?"}
+    G -->|Yes| H["Select elite individuals\n(top 5)"]
+    H --> I["Tournament Selection\nof parents"]
+    I --> J["Single-Point Crossover\nto create child"]
+    J --> K["Mutate child\n(20% probability per session)"]
+    K --> L{"Population full?"}
+    L -->|No| I
+    L -->|Yes| M["generation = generation + 1"]
+    M --> D
+    G -->|No| N["Return best solution,\nfitness, and history"]
+    N --> O["End"]

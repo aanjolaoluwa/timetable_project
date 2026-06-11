@@ -1,0 +1,18 @@
+flowchart TD
+    A["Start"] --> B["Generate or receive\ninitial solution"]
+    B --> C["Set T = 10000\nEvaluate current fitness"]
+    C --> D["Generate neighbour\nvia mutation"]
+    D --> E["Evaluate neighbour fitness"]
+    E --> F["Calculate delta = f_neighbour - f_current"]
+    F --> G{"delta < 0?\n(Improvement?)"}
+    G -->|Yes| H["Accept neighbour\nas current solution"]
+    G -->|No| I{"random() < e^(-delta/T)?"}
+    I -->|Yes| H
+    I -->|No| J["Reject neighbour\nkeep current solution"]
+    H --> K["Update best solution\nif improvement"]
+    J --> K
+    K --> L["Cool temperature:\nT = 0.995 x T"]
+    L --> M{"Iterations exhausted?"}
+    M -->|No| D
+    M -->|Yes| N["Return best solution"]
+    N --> O["End"]

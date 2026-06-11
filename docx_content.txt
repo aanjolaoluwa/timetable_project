@@ -1,0 +1,1587 @@
+[0] FROM PROMPT TO TIMETABLE: INTEGRATING NATURAL LANGUAGE REASONING WITH DIFFERENT HYPER-HEURISTIC ALGORITHMS.
+[1] BY
+[2] ADEKOMI, ANJOLAOLUWA JOY
+[3] (22CH031976)
+[4] A PROJECT PROPOSAL SUBMITTED TO THE DEPARTMENT OF COMPUTER AND INFORMATION SCIENCES, COLLEGE OF SCIENCE AND TECHNOLOGY, COVENANT UNIVERSITY OTA, OGUN STATE.
+[5] IN PARTIAL FULFILLMENT OF THE REQUIREMENTS FOR THE AWARD OF THE BACHELOR OF SCIENCE (HONOURS) DEGREE IN MANAGEMENT INFORMATION SYSTEMS
+[6] June, 2026.
+[7] CERTIFICATION
+[8] I hereby certify that this project was carried out by Adekomi, Anjolaoluwa Joy in the Department of Computer and Information Sciences, College of Science and Technology, Covenant University, Ogun State, Nigeria, under my supervision.
+[9] Mr. Henry Ogbu
+[10] Supervisor
+[11] Signature and Date
+[12] Prof. Aderonke A. Oni
+[13] Head of Department
+[14] Signature and Date
+[15] DEDICATION
+[16] This report is dedicated to Almighty God for His guidance and grace throughout my internship journey. I also dedicate it to my parents, family, friends, and everyone who continually inspires me to strive for excellence.
+[17] ACKNOWLEDGEMENTS
+[18] My most profound gratitude goes to Almighty God, who has kept me and sustained me right from the very start of my degree up until this point. To Him be all the glory. I am extremely grateful to my parents, Mr. and Mrs. Adelowo Adekomi, for their sacrifices, contributions, and prayers towards the completion of this degree. My sincere gratitude also goes to my hardworking supervisor, Mr. Dada, who always provided his support. Thank you for your excellent supervision and guidance, sir.
+[19] TABLE OF CONTENTS
+[20] CERTIFICATION                                                                                                                                                      2
+[21] DEDICATION                                                                                                                                                             3
+[22] ACKNOWLEDGEMENTS                                                                                                                                      4
+[23] TABLE OF CONTENTS                                                                                                                                5
+[24] CHAPTER ONE                                                                                                                                                       7
+[25] INTRODUCTION                                                                                                                                                    7
+[26] 1.1 Background Information                                                                                                                             7
+[27] 1.2 Statement of the Problem                                                                                                                            8
+[28] 1.3 Aim and Objectives of the Study                                                                                                                9
+[29] 1.4 Methodology                                                                                                                                                    9
+[30] 1.5 Significance of the Study                                                                                                                              10
+[31] 1.5.1 Practical Significance                                                                                                                            10
+[32] 1.5.2 Academic and Research Significance                                                                                                11
+[33] 1.6 Project Outline                                                                                                                                               11
+[34] CHAPTER TWO12
+[35] LITERATURE REVIEW12
+[36] 2.1 Preamble12
+[37] 2.2 Review of University Course Timetabling Problems12
+[38] 2.3 Review of Heuristic and Meta-heuristic Approaches13
+[39] 2.4 Review of Hyper-heuristic Approaches13
+[40] 2.5 Review of Natural Language Processing in Scheduling and Optimization14
+[41] 2.5 Review of Relevant Concepts14
+[42] 2.5.1 Hyper-heuristics15
+[43] 2.5.2 Optimization and NP-Hard Problems15
+[44] 2.5.3 Natural Language Processing for Constraint Extraction15
+[45] 2.5.4 Web-based Timetabling Systems15
+[46] 2.6 Existing Works18
+[47] 2.7 Summary of Literature Review18
+[48] CHAPTER ONE
+[49] INTRODUCTION
+[50] 1.1 Background Information
+[51] University course timetabling is the process of assigning courses, lecturers, rooms, and time slots in a way that meets all required rules and respects preferences as much as possible. The required rules (hard constraints) include no lecturer teaching two classes at the same time, no student group having two classes in the same slot, and rooms being large enough for the number of students. The preferred rules (soft constraints) include lecturers teaching at their chosen times, avoiding long gaps between classes for students, and keeping related courses on the same day where possible courses and constraints increase (Babaei, Karimpour, & Hadidi, 2015; Chen, Sze, Goh, Sabar, & Kendall, 2021a). Because of this difficulty, researchers and developers use heuristic and meta-heuristic methods that produce good-quality timetables within acceptable time limits. Common methods include genetic algorithms, simulated annealing, and tabu search. These approaches have been applied successfully to real university datasets and have reduced clashes and impr(Lewis & Thompson, 2015; Pillay, 2016a). As universities have grown in size and complexity, with more courses, part-time lecturers, shared facilities, and hybrid teaching modes, manual methods have become inadequate.
+[52] The introduction of computer-based systems has significantly improved the process. University course timetabling is recognized as an NP-hard optimization problem, which means that finding the best possible solution becomes extremely difficult as the number of courses and constraints increases (Babaei et al., 2015; Chen et al., 2021a). Because of this difficulty, researchers and developers use heuristic and meta-heuristic methods that produce good-quality timetables within acceptable time limits. Common methods include genetic algorithms, simulated annealing, and tabu search. These approaches have been applied successfully to real university datasets and have reduced clashes and improved room utilization compared with manual schedules (Al-Betar, Khader, & Zaman, 2012; Lü & Hao, n.d.).
+[53] However, most existing timetabling systems require input data to be provided in structured formats such as spreadsheets or database files. This requirement creates a barrier for non-technical users, including departmental administrators and academic planning officers who may not have the necessary skills to prepare the data correctly. Recent advances in natural language processing (NLP) offer a solution to this problem. NLP techniques enable systems to accept requirements written in ordinary English and automatically extract the relevant courses, lecturers, rooms, and constraints (Chen et al., 2021a; Milani Fitria, 2023). Studies conducted between 2021 and 2024 have demonstrated that NLP-based input reduces preparation time and makes scheduling tools accessible to staff without programming knowledge(Nguyen, Le, Hoang, & Nguyen, 2021).
+[54] Hyper-heuristics provide an additional improvement by managing several low-level heuristics (such as genetic algorithms, simulated annealing, and tabu search) and selecting or combining them during the search process. This approach increases flexibility and often produces better results than using a single method for all instances(Ahmed, Enderözcan, & Kheiri, n.d.; Drake, Kheiri, Özcan, & Burke, 2020). Recent work has shown that hyper-heuristics perform well on standard timetabling benchmarks and on real university data.
+[55] The present study builds on these developments by creating a system that accepts natural language input, converts it into formal constraints using current NLP methods, and then applies multiple hyper-heuristic algorithms (genetic algorithm, simulated annealing, and tabu search) to generate timetables. The system will compare the performance of the three algorithms on the same set of constraints and display the results to the user. This combination addresses the need for an accessible, effective, and comparative timetabling tool suitable for use in Covenant University and similar institutions.
+[56] 1.2 Statement of the Problem
+[57] Most existing university timetabling systems require users to enter data in fixed formats, such as Excel spreadsheets or database files. This creates a major difficulty for many school staff who handle scheduling but do not have programming or technical skills. When non-technical users try to prepare the data themselves, they often make mistakes that lead to incorrect timetables. As a result, administrators spend extra time fixing errors manually, and the final schedule still contains clashes or poor room assignments (Jaradat et al., 2019; Soria-Alcaraz et al., 2016). These problems reduce efficiency and cause frustration for both staff and students.
+[58] Another important limitation is that no single optimization algorithm performs best for every type of timetable or set of constraints. For example, genetic algorithms may work well when there are many lecturer preferences, while simulated annealing might be faster when room availability is very limited. Without testing different algorithms on the actual constraints of a particular semester, it is difficult to know which one will give the best result (Ahmed et al., n.d.; Drake et al., 2020). Current systems usually offer only one fixed algorithm, so users cannot see or choose the most suitable method for their specific case.
+[59] In addition, very few timetabling tools can accept requirements written in ordinary English. Recent studies have shown that natural language processing (NLP) can successfully extract courses, lecturers, rooms, and rules from plain text; most practical systems still lack this feature (Pallagani et al., 2024; Abgaryan et al., 2024). When natural language input is missing, non-technical staff remain dependent on technical experts to enter the constraints correctly.
+[60] Although recent studies have examined natural language processing and hyper-heuristics separately, very few have integrated natural language reasoning directly into hyper-heuristic algorithms for university course timetabling (Pallagani et al., 2024; Drake et al., 2020). This gap prevents scheduling officers from using a single system that is both easy to operate and able to select the most effective algorithm for their specific constraints.
+[61] Finally, there is limited research that combines all three elements in one system: (1) natural language input, (2) multiple hyper-heuristic algorithms running on the same problem, and (3) clear comparison of their performance (penalty scores, feasibility, and running time). Without such comparison, developers and users cannot easily understand which algorithm is most effective for different kinds of university timetabling problems (Abdipoor et al., 2023; Soria-Alcaraz et al., 2016).
+[62] 1.3 Aim and Objectives of the Study
+[63] The aim of this work is to integrate natural language reasoning into hyper-heuristic algorithms. To achieve this aim, this project work will follow these specific objectives:
+[64] To construct a structured data that can be suitable for integrating natural language reasoning into hyper-heuristic algorithms.
+[65] To use prompt engineering tools to process hard constraints and soft constraints into a readable input for different hyper-heuristic algorithms.
+[66] To evaluate and compare the different hyper-heuristic algorithms.
+[67] To demonstrate the practical value of the best hyper-heuristic algorithm using a web application.
+[68] 1.4 Methodology
+[69] The methodologies adopted for this study are:
+[70] Construction of a structured dataset from Covenant University.
+[71] Setting up a transformer-based large language model with prompt engineering to process hard and soft constraints.
+[72] Implementation and comparative evaluation of hyper-heuristic algorithms.
+[73] Development of a web application using React and Django.
+[74] A tabular mapping of the objectives and methodologies for this
+[75] Table 1.1: Objectives-Methodology Mapping Table
+[76] Objective
+[77] Methodology
+[78] To construct structured data that can be suitable for integrating natural language reasoning into hyper-heuristic algorithms.
+[79] Collect real Covenant University data (courses, lecturers, rooms, time slots, student sections) for the 2025/2026 session. Clean and store in the PostgreSQL database.
+[80] To use prompt engineering tools to process hard constraints and soft constraints into a readable input for different hyper-heuristic algorithms.
+[81] Set up a transformer-based LLM (fine-tuned BERT/DistilBERT). Design prompts to extract entities and constraints from plain English sentences. Convert output to structured format.
+[82] To evaluate and compare the different hyper-heuristic algorithms.
+[83] Implement three algorithms in Python: Genetic Algorithm, Simulated Annealing, and Tabu Search. Run each algorithm 20–30 times on identical datasets and constraints. Measure: (a) hard-constraint violations, (b) soft-constraint penalty score, (c) running time. Present results in tables and charts.
+[84] To demonstrate the practical value of the best hyper-heuristic algorithm using a web application.
+[85] Develop a full-stack web application using React (frontend) + Django (backend) + PostgreSQL. Users type English constraints → the system runs the three algorithms → displays the best timetable + comparison.
+[86] 1.5 Significance of the Study
+[87] This study is important for two main reasons: it produces a practical timetabling tool that any university can use, and it adds new knowledge to the research community.
+[88] 1.5.1 Practical Significance
+[89] The system allows scheduling staff to enter requirements in everyday English instead of learning complex file formats. This removes the technical barrier that currently prevents many administrators from using automated timetabling tools.
+[90] By comparing three hyper-heuristic algorithms (genetic algorithm, simulated annealing, and tabu search) on constraints extracted from natural language, the study identifies which method works best in different real-world situations. Universities can then choose the strongest algorithm for their own needs, leading to fewer clashes, better room usage, and faster timetable preparation.
+[91] The final web application is a complete, ready-to-use system that can be installed at any higher institution without additional development cost.
+[92] 1.5.2 Academic and Research Significance
+[93] The work provides fresh empirical results on the performance of hyper-heuristic algorithms when their input constraints come from natural language processing rather than manually structured data, an area that has received very little attention in the literature from 2015 to 2025(Chen, Sze, Goh, Sabar, & Kendall, 2021b; Drake et al., 2020).
+[94] It presents a complete, reproducible framework that successfully combines transformer-based language models with hyper-heuristic solvers. Researchers working on user-friendly optimization systems can adopt or extend this approach for other scheduling and resource-allocation problems.
+[95] The findings contribute to the growing body of knowledge on making advanced artificial intelligence techniques accessible to non-expert users, which is a key challenge in modern computing research.
+[96] In summary, the study delivers an effective, easy-to-use timetabling solution while producing new insights that advance the fields of natural language interfaces and intelligent optimization.
+[97] 1.6 Project Outline
+[98] This research is divided into five chapters. Chapter one covers the background, problem statement, aim and objectives, methodology, significance, and scope. Chapter two reviews related literature. Chapter three details the system design and methodology. Chapter four presents implementation and results. Chapter five concludes with findings, recommendations, and future work.
+[99] CHAPTER TWO
+[100] LITERATURE REVIEW
+[101] 2.1 Preamble
+[102] The area of university timetabling has undergone tremendous changes with the development of optimization techniques and artificial intelligence. This paper reviews how timetabling problems have been addressed over time, focusing on hyper-heuristic algorithms and the increasing prominence of natural language processing. Key concepts, existing systems, and the current state of affairs are discussed in detail by drawing on recent works to identify trends and gaps. The aim here is to set the stage for this project, which integrates NLP for handling user prompts with hyper-heuristics for smart and easy timetabling by all stakeholders.
+[103] 2.2 Review of University Course Timetabling Problems
+[104] University course timetabling is the process of allocating lectures to time slots and rooms while satisfying hard constraints like no clashes for students or lecturers and room capacity, while minimizing the violations of soft constraints, such as lecturer preferences and compact schedules. The problem is NP-hard, and real instances often include additional institutional rules that make exact methods impractical (Abdipoor, Yaakob, Goh, & Abdullah, 2023). Surveys point out that the complexity lies in the large solution space and varying constraints across institutions, including multi-section courses or hybrid teaching modes (Dunke & Nickel, 2023; Xiang, Hu, Yu, & Wang, 2024) ).
+[105] Early benchmark datasets, including the Toronto instances and later the ITC-2007 datasets, were quite widely used for comparing algorithms. Curriculum-based variants (in which the constraints are driven by student enrollments) are particularly challenging due to dynamic enrollment data, which often leads to infeasible initial solutions (Abdipoor et al., 2023). Soft constraints like minimizing gaps between classes affect user satisfaction and are considered critical for solution acceptance (Xiang et al., 2024).
+[106] Recent extensions concern multi-objective formulations that balance room stability with lecturer travel distances, tested on datasets from business schools with up to 1,000 events (Dunke & Nickel, 2023). Studies on hybrid teaching-test constraints for venue flexibility introduced new constraints and showed that ignoring these increases soft constraint violations by 20–30% (Xiang et al., 2024). These surveys have emphasized the need for adaptive methods, which scale to real-time updates, such as semester changes, with the requirement to keep computational times below 10 minutes for medium-sized instances (Pillay, 2016a).
+[107] 2.3 Review of Heuristic and Meta-heuristic Approaches
+[108] Heuristics and meta-heuristics are the dominant approaches in timetabling solutions due to intractability. Genetic algorithms (GAs) have been popular since the 1990s and are still being refined. Implementations in recent years mostly use indirect encoding or are hybridized with local search for better solution qualities on large instances. For instance, a 2024 hybrid GA combined with memetic algorithms yielded near-optimal solutions to ITC-2007 datasets, with up to 35% reductions in soft constraint violations when compared with a standard GA (Abdipoor et al., 2023). Meanwhile, another 2021 work utilized a multi-chromosome GA to handle lecturer preferences and room features and was able to produce feasible timetables for over 800 events in less than 15 minutes.
+[109] Simulated annealing gives good results, with fewer parameters to tune. From the literature, adaptive cooling schedules and neighborhood structures tailored to timetabling constraints can further reduce computation time while preserving feasibility (Kiefer, Hartl, & Schnell, 2017). Iterative improvement variants solve curriculum-based problems to near feasibility, with up to 98% feasibility on real datasets, which is a 22% reduction in penalty compared to basic SA.(Kiefer et al., 2017).
+[110] Tabu search is known for efficiently escaping from the local optima, thanks to memory structures. Other recent variants also include long-term memory and frequency-based diversification, attaining competitive results on the ITC-2007 benchmarks. For instance, in 2022, an adaptive tabu search used dynamic tabu tenure and solved course timetabling with uncertain student numbers, achieving solutions with no hard violations 95% of the time(Lü & Hao, n.d.). In another more recent work, also in 2018, TS with adaptive heuristic ordering has reduced soft violations by up to 40% on exam timetabling variants compared to fixed-order-based methods.
+[111] Figure 2.1: Broad Categorization of Hyper-Heuristics for Timetabling
+[112] Source: Adapted from Burke et al. (2013)
+[113] (This figure would show categories like selection vs. generation hyper-heuristics, with examples of low-level ones like GA, TS, and SA.)
+[114] 2.4 Review of Hyper-heuristic Approaches
+[115] While low-level heuristics search directly for solutions, hyper-heuristics operate at a higher level by either selecting or generating low-level heuristics. Selection hyper-heuristics have reported good performance in timetabling, mainly due to their ability to adapt during the search process (Pillay, 2016a). A 2020 review indicated that in 70% of cross-domain tests, hyper-heuristics outperform single metaheuristics owing to their generality (Drake et al., 2020).
+[116] Simulated annealing (SA) gives good results with fewer parameters to tune. Adaptive cooling schedules and neighborhood structures tailored to timetabling constraints can further reduce computation time while preserving feasibility (Kiefer et al., 2017). Variants with iterative improvement solve curriculum-based problems, reaching 98% feasibility on real datasets, outperforming basic SA by 22% in terms of penalty reduction (Kiefer et al., 2017).
+[117] Tabu search (TS) efficiently escapes local optima thanks to memory structures. Recent variants include long-term memory and frequency-based diversification, achieving competitive results on ITC-2007 benchmarks (Lü & Hao, n.d.). Adaptive TS methods with dynamic tenure reduce soft violations and handle uncertain student numbers effectively.
+[118] 2.5 Review of Natural Language Processing in Scheduling and Optimization
+[119] NLP is changing how constraints are input into optimization systems, converting casual text into structured rules. Recent systematic reviews show that rule-based NLP, employing techniques like regular expression (regex) pattern matching, remains a highly effective method for requirements formalization. These deterministic approaches provide 100% accuracy within a predefined vocabulary and avoid the computational overhead associated with deep learning models (Nguyen et al., 2022). Recent work focuses on employee and appointment scheduling but translates well to universities (Tang et al., 2024).
+[120] While some advanced systems have begun exploring transformer-based models like BERT or Large Language Models (LLMs) to handle ambiguous constraints (Pallagani et al., 2024; Liu et al., 2023), rule-based constraint extraction is often preferred for academic and structural prototyping. Using deterministic parsing ensures that explicit institutional rules, such as "No overlapping classes for lecturers," are translated into formal machine-readable constraints without the probabilistic errors common in generative models.
+[121] 2.5 Conceptual Review (Concepts and Definitions)
+[122] 2.5.1 Hyper-heuristics
+[123] Hyper-heuristics are search methods that choose or create heuristics to solve a problem instead of solving it directly. Selection hyper-heuristics are the most common type for timetabling and typically include a heuristic selection mechanism and a move acceptance criterion (Drake et al., 2020; Ochoa et al., 2019).
+[124] 2.5.2 Optimization and NP-Hard Problems
+[125] According to predetermined goals, optimization entails selecting the best or nearly best option from a wide range of options. As a classic NP-hard optimization problem, university course scheduling cannot be solved in polynomial time by any known algorithm (Babaei et al., 2015; Pillay, 2016). Real-world scenarios with hundreds of courses, lecturers, rooms, and other rules quickly render precise methods impracticable, and even figuring out whether a feasible schedule exists (ignoring soft constraints) is NP-complete (Ceschia et al., 2023; Thepphakorn et al., 2020). Heuristic and meta-heuristic approaches predominate due to this complexity, exchanging guaranteed optimality for good solutions in a reasonable amount of time (Drake et al., 2020).
+[126] 2.5.3 Natural Language Processing for Constraint Extraction
+[127] To extract entities, intents, and relationships from free text, modern natural language processing (NLP) employs transformer-based models such as BERT (Devlin et al., 2019). This makes it possible to automatically translate organic prompts in scheduling, like "Dr. Adebayo cannot teach on Fridays" or "no two 300-level classes in the same room," into formal constraints (Pallagani et al., 2024; Abgaryan et al., 2024).
+[128] 2.5.4 Web-based Timetabling Systems
+[129] Modern web-based timetabling systems are increasingly shifting toward rapid prototyping frameworks natively integrated with Python's data science ecosystem. Frameworks like Streamlit and FastAPI allow for seamless bridging between the backend optimization engine and the frontend interface without requiring separate JavaScript architectures. These setups provide automatic API documentation, interactive data visualization, and real-time schedule adjustments within a unified ecosystem (Ceschia et al., 2023).
+[130] Strengths and weaknesses of the papersdiagrams, examples, graphs, and a few words for chap 2.
+[131] 2.5.5 Hard constraintsThis is defined as the conditions that must be satisfied for the timetable to be valid. These include:
+[132] No lecturer can teach two different courses at the same time.
+[133] No student group should have two courses scheduled simultaneously.
+[134] Classrooms must meet capacity requirements.
+[135] 2. 5.6 Soft constraints
+[136] These are the desirable preferences that improve timetable quality but whose violations do not invalidate the schedule. Examples include:
+[137] Lecturer preferred time slots.
+[138] Minimizing idle gaps between a student’s classes.
+[139] Ensuring compact schedules and convenient room locations for lecturers.
+[140] The timetabling problem is NP-hard, meaning the solution complexity increases exponentially with the number of courses, lecturers, and rooms involved, making manual and exact mathematical approaches inefficient for real-world cases (Abdipoor, Yaakob, Goh, & Abdullah, 2023).
+[141] UCTP complexity becomes even greater in institutions offering:
+[142] hybrid learning delivery (face-to-face + online),
+[143] multi-section courses,
+[144] large enrollment student groups,which broadens the search space and produces more optimization conflicts (Dunke & Nickel, 2023; Xiang, Hu, Yu, & Wang, 2024).
+[145] 2.3 Theoretical Review (Theories, Models, and Algorithmic Foundations)
+[146] Timetabling problems were originally solved using exact methods, such as integer linear programming and constraint programming. Although mathematically powerful, these approaches struggle to scale when the number of constraints increases significantly.
+[147] To overcome this limitation, researchers introduced metaheuristic approaches, which search for good solutions rather than perfect solutions within reasonable time. These approaches include:
+[148] Genetic Algorithms (GA)
+[149] Tabu Search (TS)
+[150] Simulated Annealing (SA)
+[151] Ant Colony Optimization (ACO)
+[152] Particle Swarm Optimization (PSO)
+[153] However, no single optimization method consistently performs best across all institutions. This gave rise to hyper-heuristics, which are higher-level frameworks that select or generate heuristics dynamically depending on the current state of the solution space. This makes them:
+[154] more flexible across institutions with different constraints,
+[155] easier to scale to large instances,
+[156] more suitable for real-time updates.
+[157] Multi-objective optimization has recently been introduced to address conflicting needs—such as room stability versus lecturer travel time, especially in large universities with distributed campuses (Dunke & Nickel, 2023). Modern theoretical models now incorporate dynamic objectives reflecting real university behavior, including semester timetable changes, venue flexibility, and hybrid teaching policies (Xiang et al., 2024).
+[158] The shift in theory highlights the importance of:
+[159] scalability,
+[160] adaptivity,
+[161] computational speed,with expectations that solutions be produced under 10 minutes for medium-sized timetables (Pillay, 2016).
+[162] 2.4 Empirical Review (Existing Systems, Findings & Evidence from Studies)
+[163] Early research relied heavily on benchmarks, especially the Toronto and ITC-2007 datasets, to compare algorithm performance. Curriculum-based timetabling became particularly difficult due to ever-changing enrollment patterns that caused even initial timetables to become infeasible (Abdipoor et al., 2023).
+[164] Across many implementations, user satisfaction with the timetable depends strongly on soft constraint performance. For example, minimizing idle gaps between classes significantly increases acceptance among lecturers and students (Xiang et al., 2024).
+[165] Recent empirical studies report that
+[166] Optimizing room stability reduces lecturer stress and movement (Dunke & Nickel, 2023).
+[167] Hybrid-teaching models introduce new venue constraints; ignoring these results in 20–30% more soft constraint violations, showing the need for updated models (Xiang et al., 2024).
+[168] Adaptive or real-time timetabling systems perform better in institutions with frequent changes, course additions, or lecturer withdrawal (Pillay, 2016).
+[169] Overall, existing systems suggest that hybrid timetabling methods, combining multiple heuristics and dynamic constraint handling, provide the most balance between feasibility, solution quality, and computational speed.
+[170] 2.6 Existing Works
+[171] Few studies evaluate "algorithm portfolio" strategies when the constraints are derived from natural language prompts instead of pre-defined structured data. While individual metaheuristics have been thoroughly compared on common benchmarks, running multiple algorithms simultaneously to select the virtual best solver—an approach known as competitive algorithm selection—provides a more robust way to handle diverse constraint patterns extracted from text (Drake et al., 2020).
+[172] Furthermore, rather than addressing the intricate multi-constraint university course scheduling problem, the majority of prompt-based scheduling tools concentrate on meeting spaces or straightforward resource allocation. Additionally, not much research has been done on giving end users comparative feedback regarding which algorithm worked best for their particular prompt (Abgaryan et al., 2024; Drake et al., 2020).
+[173] By developing a comprehensive system that accepts English prompts, extracts constraints using rule-based NLP techniques, runs a portfolio of algorithms (GA, SA, and TS), and reports comparative performance, this project fills in these gaps. It provides both a useful tool and empirical insights into algorithm robustness and competitive selection under real-world language-driven inputs.
+[174] 2.7 Summary of Literature Review
+[175] According to Babaei et al. (2015) and Ceschia et al. (2023), the review demonstrates that university course scheduling is a well-known NP-hard optimization problem that cannot be solved optimally in a reasonable amount of time for real-world instances. Due to this complexity, over the past ten years, meta-heuristic and hyper-heuristic approaches have dominated the field. On benchmarks like ITC-2007 and ITC-2011, genetic algorithms, simulated annealing, tabu search, and particularly selection hyper-heuristics consistently produce high-quality, workable timetables (Pillay, 2016; Drake et al., 2020; Abdipoor et al., 2023; Soria-Alcaraz et al., 2016).
+[176] Although these algorithms perform well when constraints are supplied in structured formats, very few studies have explored their behavior when constraints are extracted from natural language prompts (Pallagani et al., 2024). Existing natural-language-driven scheduling systems tend to focus on simpler domains than the multi-constraint university course timetabling problem, and almost none compare multiple algorithms in a portfolio under language-driven inputs. et al., 2021a; Milani Fitria, 2023)(Ahmed et al., n.d.; Pillay, 2016b)
+[177] This gap is significant for a Management Information Systems final-year project in the CIS department, as the guidelines explicitly require the application of a computing technique or algorithm to solve a discovered problem and the delivery of a working system. This project now fills this gap by applying modern NLP techniques that convert free-text prompts into formal constraints, comparing the performance of three established hyper-heuristic algorithms, genetic algorithm, simulated annealing, and tabu search, on the same prompt-derived instances, and presenting results via an interactive web interface.
+[178] CHAPTER THREE
+[179] RESEARCH METHODOLOGY
+[180] 3.1 Preamble
+[181] This chapter gives a comprehensive description of the methodology used in the design, development, and implementation of the hyper-heuristic university timetable generation system with the project topic titled "From Prompt to Timetable: Integrating Natural Language Reasoning with Different HyperHeuristic Algorithms." The chapter details the research design, system analysis, proposed system architecture, algorithm design, constraint modeling, fitness function formulation, dataset description, and implementation procedures. All diagrams, pseudocode, and mathematical formulations presented in this chapter are derived directly from the actual implementation of the system.
+[182] The methodology follows a systematic software engineering approach, integrating Natural Language Processing (NLP) for constraint specification with three distinct meta-heuristic optimization algorithms, namely Genetic Algorithm (GA), Simulated Annealing (SA), and Tabu Search (TS), to generate conflict-free university timetables. This approach aligns with the hyper-heuristic paradigm, which selects or generates heuristics to solve optimization problems rather than directly solving the problem with a single heuristic (Burke et al., 2013).
+[183] 3.2 Research Design
+[184] The research design adopted for this study is the Design Science Research (DSR) methodology. According to Dresch et al. (2015), DSR is appropriate for studies that aim to design and evaluate IT artifacts intended to solve identified organizational problems. This methodology is particularly suitable for this project because:
+[185] Problem Identification: The university timetable scheduling problem (UTSP) is a well-documented NP-hard combinatorial optimization problem (Ceschia et al., 2023) requiring intelligent algorithmic solutions.
+[186] Artifact Design: The system constitutes a novel software artifact that integrates NLP-based constraint parsing with multiple hyper-heuristic algorithms.
+[187] Evaluation: The system's effectiveness is measured through quantitative fitness metrics, clash reduction rates, and comparative algorithm performance analysis.
+[188] The research follows an experimental approach, wherein three optimization algorithms are systematically applied to the same dataset, and their performance is compared using standardized evaluation metrics including fitness scores, lecturer clash counts, room clash counts, and capacity violation counts.
+[189] 3.3 System Analysis
+[190] 3.3.1 Analysis of the Existing System
+[191] Traditional university timetable construction at most Nigerian institutions, including Covenant University (the institution whose academic dataset forms the basis of this study), is mostly manual or semi-automated. The existing system relies on spreadsheet-based methods where academic administrators manually assign courses to timeslots and venues. This approach suffers from several critical limitations:
+[192] High Error Rate: Manual scheduling is prone to lecturer clashes (a lecturer assigned to two courses at the same time), room conflicts (two courses assigned to the same room at the same time), and venue capacity violations (students exceeding room capacity).
+[193] Time Intensive: The process typically requires several weeks of iterative adjustments before producing a feasible timetable.
+[194] Scalability Issues: As the number of courses, lecturers, venues, and student enrollments increases, the combinatorial complexity grows exponentially, making manual approaches impractical.
+[195] Lack of Optimization: The existing system produces feasible timetables at best but does not optimize for quality metrics such as minimizing room changes, distributing classes evenly across the week, or respecting soft preferences.
+[196] No Natural Language Interface: Administrators must translate institutional policies and scheduling preferences into rigid spreadsheet formats, with no mechanism for expressing constraints in natural language.
+[197] 3.3.2 Analysis of the Proposed System
+[198] The proposed system addresses the identified limitations through an intelligent, automated timetable generation platform with the following capabilities:
+[199] Natural Language Constraint Specification: Administrators input scheduling constraints in plain English (e.g., "No lecturer should teach two classes at the same time," "Morning classes are preferred"), which are parsed by the NLP module and translated into machine-readable constraint objects.
+[200] Multi-Algorithm Optimization: Three hyper-heuristic algorithms (Genetic Algorithm (GA), Simulated Annealing (SA), and Tabu Search (SA)) are executed on the scheduling problem, and the best-performing solution is automatically selected.
+[201] Automated Clash Detection: The fitness function systematically identifies and penalizes lecturer clashes, room clashes, capacity violations, and NLP constraint violations.
+[202] Web-Based Interface: A Streamlit-powered user interface provides role-based access for administrators, lecturers, and students with real-time timetable visualization.
+[203] RESTful API Backend: A FastAPI backend enables programmatic access to the scheduling engine, supporting dataset upload, constraint parsing, timetable generation, and retrieval.
+[204] 3.4 Proposed System
+[205] 3.4.1 System Overview
+[206] The proposed system, named "OptimaSched" (also referred to as "Time4Tables" in the user interface), is a multi-layered intelligent timetable scheduling platform. The system accepts academic resource datasets in CSV format, parses natural language constraints from administrators, generates an initial feasible timetable, and then applies three competing optimization algorithms to produce an optimized, clash-minimized schedule.
+[207] The system operates through a four-step workflow:
+[208] Step 1 — Dataset Upload: The administrator uploads a CSV file containing course codes, lecturers, student counts, venue assignments, and course load information.
+[209] Step 2 — Hard Constraint Definition: The administrator specifies mandatory institutional rules in natural language (e.g., "No overlapping classes for lecturers").
+[210] Step 3 — Soft Constraint Definition: The administrator specifies preferred but nonmandatory scheduling preferences (e.g., "Morning classes are preferred").
+[211] Step 4—Multi-Algorithm Optimization: The system executes all three algorithms (GA, SA, TS), compares their fitness scores, and selects the best performing solution.
+[212] 3.4.2 Key Features
+[213] Feature
+[214] Description
+[215] NLP Constraint Parsing
+[216] Translates plain English constraints into structured JSON objects using regex-based pattern matching.
+[217] Genetic Algorithm
+[218] Population-based evolutionary search with tournament selection, single-point crossover, and mutation
+[219] Simulated Annealing
+[220] Temperature-based probabilistic neighborhood search with geometric cooling
+[221] Tabu Search
+[222] Memory-based neighborhood search with a tabu list to prevent cycling
+[223] Fitness Evaluation
+[224] Multi-objective weighted penalty function assessing six violation categories
+[225] Role-Based Access
+[226] Separate portals for academic administrators, lecturers, and student users.
+[227] Real-Time Visualization
+[228] Interactive weekly grid explorer with day-by-day tabbed timetable views
+[229] Manual Override
+[230] Administrator ability to manually adjust course assignments post-optimization
+[231] CSV Export
+[232] Download functionality for the optimized timetable in CSV format
+[233] RESTful API
+[234] FastAPI backend with endpoints for upload,
+[235] 3.5 System Architecture
+[236] The system follows a three-tier client-server architecture comprising the Presentation Layer (Streamlit UI), Business Logic Layer (scheduling engine with NLP parser and optimization algorithms), and Data Layer (SQLite database and CSV file storage).
+[237] 3.5.1 High-Level Architecture Diagram
+[238] Figure 3.1: High-Level System Architecture Diagram
+[239] 3.5.2 Component Architecture
+[240] Figure 3.2: Component Architecture Diagram
+[241] 3.6 Input Design
+[242] The system accepts two primary categories of input:
+[243] 3.6.1 Academic Resource Dataset (CSV)
+[244] The input dataset is a Comma-Separated Values (CSV) file containing the following columns:
+[245] Column Name
+[246] Data Type
+[247] Description
+[248] Example
+[249] SEMESTER
+[250] String
+[251] Academic semester identifier
+[252] "Alpha"
+[253] LEVEL
+[254] Integer
+[255] Student academic level
+[256] 100, 200, 300, 400
+[257] COURSE CODE
+[258] String
+[259] Unique course identifier
+[260] "CSC335", "BCH357"
+[261] COURSE
+[262] LOAD(HOURS)
+[263] Integer
+[264] Weekly contact hours
+[265] 1, 2, 3
+[266] COURSE UNIT
+[267] Integer
+[268] Credit units
+[269] 2, 3
+[270] CLASSROOM (VENUE)
+[271] E)
+[272] String
+[273] Preferred or assigned venue
+[274] "COMPUTER LAB",
+[275] "HALL107"
+[276] COURSE TITLE
+[277] String
+[278] Full course name
+[279] "Computer Science
+[280] Course"
+[281] LECTURER
+[282] String
+[283] Assigned lecturer name
+[284] "Mr. Dada Ibidapo
+[285] Dare"
+[286] STUDENTS
+[287] Integer
+[288] Number of enrolled students
+[289] 176
+[290] VENUE_CAPACITY
+[291] Integer
+[292] Maximum seating capacity of the venue
+[293] 250
+[294] 3.6.2 Natural Language Constraints
+[295] The second input category consists of plain English text entered by the administrator through the user interface. The NLP parser supports the following constraint patterns:
+[296] Hard Constraints:
+[297] "No lecturer should teach two classes at the same time"
+[298] "No overlapping classes for lecturers"
+[299] "Large classes above 200 students must use large halls" Soft Constraints:
+[300] "Morning classes are preferred"
+[301] "Avoid evening classes"
+[302] "No classes on Friday from 2pm"
+[303] "Dr. Rotimi cannot teach on Monday"
+[304] The NLP parser uses regular expression pattern matching to extract constraint types from the natural language input and generates a structured JSON constraint object (Nguyen et al., 2022).
+[305] 3.7 Output Design
+[306] The system produces the following outputs:
+[307] 3.7.1 Optimized Timetable (CSV)
+[308] The primary output is a CSV file (final_timetable.csv) containing the optimized schedule with the following columns:
+[309] Column Name
+[310] Description
+[311] course
+[312] Course code
+[313] lecturer
+[314] Assigned lecturer
+[315] students
+[316] Student count
+[317] venue
+[318] Assigned classroom
+[319] room
+[320] Room identifier (same as venue)
+[321] capacity
+[322] Room capacity
+[323] time slot
+[324] Assigned day and hour (e.g., "Monday_8-9")
+[325] duration
+[326] Course duration in hours
+[327] level
+[328] Student level
+[329] 3.7.2 Fitness Evaluation Report
+[330] A dictionary object containing:
+[331] fitness: Total weighted penalty score (lower is better)
+[332] lecturer_clashes: Number of lecturer time conflicts
+[333] room_clashes: Number of room double-bookings
+[334] capacity_violations: Number of capacity exceedances
+[335] practical_violations: Number of practical session conflicts
+[336] unscheduled_sessions: Number of unassigned courses
+[337] nlp_violations: Number of NLP constraint breaches
+[338] 3.7.3 Algorithm Comparison Benchmark
+[339] A comparative table showing each algorithm's fitness score, execution time, constraint satisfaction rate, and selection status.
+[340] 3.7.4 Interactive Visual Timetable
+[341] A web-based weekly grid explorer displaying the optimized timetable in a day-by-day tabbed view with course code, lecturer, timeslot, venue, student count, and capacity information.
+[342] 3.8 Database Design
+[343] 3.8.1 Database Technology
+[344] The system uses SQLite as the embedded relational database, accessed through the SQLAlchemy Object-Relational Mapping (ORM) library. SQLite was chosen for its lightweight nature, zeroconfiguration requirement, and suitability for single-user desktop/web applications.
+[345] 3.8.2 Database Schema
+[346] The database contains a single table, timetable_entries, with the following schema:
+[347] Column
+[348] Data Type
+[349] Constraints
+[350] Description
+[351] id
+[352] INTEGER
+[353] PRIMARY KEY, AUTO INCREMENT
+[354] Unique record identifier
+[355] course
+[356] VARCHAR
+[357] INDEXED
+[358] Course code
+[359] lecturer
+[360] VARCHAR
+[361] —
+[362] Lecturer name
+[363] students
+[364] INTEGER
+[365] —
+[366] Student count
+[367] venue
+[368] VARCHAR
+[369] —
+[370] Assigned venue
+[371] time slot
+[372] VARCHAR
+[373] —
+[374] Day_Hour format
+[375] duration
+[376] INTEGER
+[377] —
+[378] Duration in hours
+[379] level
+[380] VARCHAR
+[381] —
+[382] Student level
+[383] 3.8.3 Entity-Relationship Diagram
+[384] Figure 3.3: Entity-Relationship Diagram
+[385] 3.9 Dataset Description
+[386] 3.9.1 Primary Dataset
+[387] The primary dataset used in this study is the Covenant University Academic Resources Dataset, stored as cleaned_dataset.csv in the data/ directory. The dataset contains academic scheduling information for courses offered across multiple departments and colleges of the university.
+[388] Dataset Characteristics:
+[389] Property
+[390] Value
+[391] File Format
+[392] CSV (Comma-Separated Values)
+[393] Total Records
+[394] 490+ course sessions
+[395] Unique Departments
+[396] 20+ academic departments
+[397] Academic Levels
+[398] 100, 200, 300, 400, 500
+[399] Unique Venues
+[400] 50+ classroom venues
+[401] Unique Lecturers
+[402] 100+ academic staff
+[403] Student Range
+[404] 56 – 431 per course
+[405] Course Load Range
+[406] 1 – 3 hours per session
+[407] 3.9.2 Venue Classification
+[408] The venues in the dataset are classified into the following categories:
+[409] Category
+[410] Examples
+[411] Capacity Range
+[412] Mega Lecture Theatres
+[413] LT1, LT2, LARGELH
+[414] 1,000 – 2,500
+[415] Large Halls
+[416] HALL107, HALL108, HALL201
+[417] 240 – 500
+[418] Medium Halls
+[419] HALL306, HALL307, STUDIO 100
+[420] 180 – 280
+[421] Science Laboratories
+[422] BCH LAB, BIOLAB, CHEM
+[423] LAB
+[424] 140 – 180
+[425] Computer Laboratories
+[426] COMPUTER LAB
+[427] 250 – 300
+[428] Engineering Halls
+[429] CHE 200LH, CVE 300LH, MCE 400LH
+[430] 150 – 250
+[431] Category
+[432] Examples
+[433] Capacity Range
+[434] Special Venues
+[435] CURID Auditorium, Chapel, Library
+[436] 500 – 1,200
+[437] Overflow Facilities
+[438] OVERFLOW_HALL_1, OVERFLOW_HALL_2
+[439] 800 – 1,000
+[440] 3.9.3 Data Preprocessing Pipeline
+[441] The dataset undergoes a rigorous preprocessing pipeline before being fed into the scheduling engine:
+[442] Figure 3.4: Data Preprocessing Pipeline
+[443] The preprocessing steps include:
+[444] Column Name Standardization: All column names are stripped of whitespace and converted to uppercase.
+[445] Venue Name Cleaning: The venue_cleaner.py module applies a comprehensive mapping of over 80 venue name variations to their standardized forms using regular expression matching and a dictionary lookup. For example, "CST, HALL 107" is mapped to "HALL107", and "BIO LAB" is mapped to "BIOLAB".
+[446] Lecturer Assignment: For courses with missing lecturer information, the lecturer.py module assigns lecturers from the academic_data.py database by matching course code prefixes to departments (e.g., "CSC" →
+[447] "COMPUTER_AND_INFORMATION_SCIENCES").
+[448] Student Count Cleaning: Non-numeric student values are coerced to numeric using pd.to_numeric with errors set to "coerce", and missing values are filled with zero.
+[449] Venue Capacity Mapping: Each venue is mapped to its seating capacity using the room_capacities.py dictionary, with unknown venues defaulting to 100 seats.
+[450] Record Validation: Rows with missing course codes are removed, and records where student count exceeds 1.5 times the venue capacity are filtered out as data errors.
+[451] 3.10 Software Requirements
+[452] Requirement
+[453] Specification
+[454] Programming Language
+[455] Python 3.10+
+[456] Web Framework (Frontend)
+[457] Streamlit
+[458] Web Framework (Backend)
+[459] FastAPI
+[460] Database
+[461] SQLite 3.x
+[462] ORM
+[463] SQLAlchemy
+[464] Data Processing
+[465] pandas 2.3.3, NumPy 2.2.6
+[466] Visualization
+[467] Matplotlib 3.10.9
+[468] Scientific Computing
+[469] SciPy 1.15.3
+[470] NLP Processing
+[471] Python re (Regular Expressions), JSON
+[472] HTTP Client
+[473] Requests
+[474] Operating System
+[475] Windows 10/11, Linux, macOS
+[476] Web Browser
+[477] Google Chrome, Mozilla Firefox, Microsoft
+[478] Edge
+[479] 3.11 Hardware Requirements
+[480] Requirement
+[481] Minimum Specification
+[482] Recommended Specification
+[483] Processor
+[484] Intel Core i5 / AMD Ryzen 5
+[485] Intel Core i7 / AMD Ryzen 7
+[486] RAM
+[487] 4 GB
+[488] 8 GB
+[489] Storage
+[490] 500 MB free disk space
+[491] 1 GB free disk space
+[492] Display
+[493] 1366 × 768 resolution
+[494] 1920 × 1080 resolution
+[495] Network
+[496] Not required (local deployment)
+[497] Broadband for API access
+[498] 3.12 Algorithm Design
+[499] 3.12.1 Overview of the Hyper-Heuristic Approach
+[500] The system employs a selection hyper-heuristic framework, which operates at a higher level of abstraction than individual meta-heuristics. Rather than applying a single optimization algorithm, the system executes three distinct meta-heuristic algorithms on the same scheduling problem and selects the best-performing solution based on fitness evaluation (Burke et al., 2013; Drake et al., 2020).
+[501] The three algorithms implemented are:
+[502] Genetic Algorithm (GA) — a population-based evolutionary algorithm
+[503] Simulated Annealing (SA) — a trajectory-based probabilistic algorithm
+[504] Tabu Search (TS) — a memory-based neighbourhood search algorithm
+[505] 3.12.2 Problem Representation
+[506] Each timetable solution is represented as a list of dictionaries, where each dictionary represents a single scheduled session. This representation is consistent across all three algorithms and the fitness function.
+[507] The search space is defined by the Cartesian product of available timeslots and venues. With 6 days × 10 hours = 60 timeslots and approximately 30+ venues, each course can potentially be assigned to any of 60 × 30 = 1,800 (day, hour, venue) combinations, making the total search space exponentially large.
+[508] 3.13 Constraint Definition
+[509] 3.13.1 Hard Constraints
+[510] Hard constraints are inviolable conditions that must be satisfied for a timetable to be considered feasible. Violation of any hard constraint renders the timetable invalid. The following hard constraints are enforced:
+[511] ID
+[512] Constraint
+[513] Description
+[514] Penalty Weight
+[515] HC1
+[516] Lecturer Non-Overlap
+[517] A lecturer cannot be assigned to two or more courses in the same timeslot
+[518] 100,000 per violation
+[519] HC2
+[520] Room Non-Overlap
+[521] A classroom cannot host two or more courses in the same timeslot
+[522] 100,000 per violation
+[523] HC3
+[524] Capacity Compliance
+[525] The number of students must not exceed the room capacity
+[526] 50,000 per violation
+[527] HC4
+[528] Session Scheduling
+[529] Every course must be assigned a valid timeslot and venue
+[530] 500,000 per unscheduled session
+[531] 3.13.2 Soft Constraints
+[532] Soft constraints represent preferences that should be satisfied when possible but do not invalidate the timetable if violated. They are derived from NLP-parsed administrator input:
+[533] ID
+[534] Constraint
+[535] Description
+[536] Penalty Weight
+[537] SC1
+[538] Day Avoidance
+[539] Certain days should be avoided for scheduling
+[540] (e.g., "No classes on
+[541] Friday")
+[542] 200,000 per violation
+[543] SC2
+[544] Lecturer Day Preference
+[545] Specific lecturers should not be scheduled on specific days
+[546] 200,000 per violation
+[547] SC3
+[548] Morning Preference
+[549] Classes should preferably be scheduled in morning timeslots
+[550] Implicit in fitness
+[551] SC4
+[552] Evening Avoidance
+[553] Late timeslots (4-5, 56) should be avoided, especially for 500-level students
+[554] Implicit in generation
+[555] 3.13.3 Special Constraints
+[556] ID
+[557] Constraint
+[558] Description
+[559] SP1
+[560] Computer Course Preference
+[561] Courses with prefixes CSC,
+[562] CIT, or CIS are preferentially
+[563] assigned to COMPUTER_LAB
+[564] SP2
+[565] Level 500 Restriction
+[566] 500-level courses are not scheduled in timeslots "4-5" or "5-6"
+[567] SP3
+[568] Unknown Lecturer Bypass
+[569] Courses assigned to "Unknown Lecturer" bypass the lecturer
+[570] clash check
+[571] 3.14 Fitness Function Design
+[572] 3.14.1 Mathematical Formulation
+[573] The fitness function evaluates the quality of a timetable solution by computing a weighted sum of constraint violations. A lower fitness value indicates a better (more feasible) solution. The fitness function is defined as:
+[574] $$F(T) = w_1 \cdot V_{LC} + w_2 \cdot V_{RC} + w_3 \cdot V_{CV} + w_4 \cdot V_{PV} + w_5 \cdot V_{US} + w_6 \cdot V_{NLP}$$ Where:
+[575] Symbol
+[576] Description
+[577] Weight ($w_i$)
+[578] $V_{LC}$
+[579] Number of lecturer clashes
+[580] $w_1 = 100,000$
+[581] $V_{RC}$
+[582] Number of room clashes
+[583] $w_2 = 100,000$
+[584] $V_{CV}$
+[585] Number of capacity violations
+[586] $w_3 = 50,000$
+[587] $V_{PV}$
+[588] Number of practical violations
+[589] $w_4 = 10,000$
+[590] $V_{US}$
+[591] Number of unscheduled sessions
+[592] $w_5 = 500,000$
+[593] $V_{NLP}$
+[594] Number of NLP constraint violations
+[595] $w_6 = 200,000$
+[596] 3.14.2 Violation Detection Logic
+[597] 1. Lecturer Clash Detection ($V_{LC}$)
+[598] The Math: $V_{LC} = \sum \sum \max(0, count - 1)$
+[599] What it means: We loop through every single timeslot and every single lecturer. If a lecturer is teaching 1 class (or zero), everything is fine. But if they are accidentally double-booked and teaching 2 classes at once, we take 2 - 1 = 1 and add 1 point to the Lecturer Clash penalty score.
+[600] 2. Room Clash Detection ($V_{RC}$)
+[601] The Math: $V_{RC} = \sum \sum \max(0, count - 1)$
+[602] What it means: Just like the lecturers, we check every timeslot and every classroom. If there are 2 different courses scheduled in the exact same room at the exact same time, we subtract 1 to find the overlap, and add that overlap to the Room Clash penalty score.
+[603] 3. Capacity Violation Detection ($V_{CV}$)
+[604] The Math: $V_{CV} = \sum \begin{cases} 1 & \text{if } S_i > C_i \ 0 & \text{otherwise} \end{cases}$
+[605] What it means: We look at every scheduled class session. If the number of enrolled students ($S_i$) is greater than the room's maximum seating capacity ($C_i$), we add 1 to the Capacity Violation penalty score. If the room is big enough, we add 0.
+[606] 3.14.3 Fitness Function Implementation
+[607] The following code snippet shows the actual implementation of the fitness function in engine.py:
+[608] 3.14.4 Weight Justification
+[609] The penalty weights are hierarchically assigned based on the severity of each constraint violation:
+[610] Unscheduled Sessions ($w_5 = 500,000$): The highest penalty because an unscheduled course represents a complete failure to allocate a required academic activity.
+[611] NLP Violations ($w_6 = 200,000$): High penalty to ensure that administrator-specified constraints are respected.
+[612] Lecturer and Room Clashes ($w_1 = w_2 = 100,000$): Equal high penalties because both types of clashes render the timetable physically infeasible.
+[613] Capacity Violations ($w_3 = 50,000$): Moderate penalty because while overcrowding is undesirable, it does not prevent the class from occurring.
+[614] Practical Violations ($w_4 = 10,000$): Lowest penalty for violations related to practical/laboratory session requirements.
+[615] 3.15 Initial Timetable Generation
+[616] 3.15.1 Algorithm Description
+[617] The initial timetable is generated using a greedy constructive heuristic that processes courses in descending order of student count (largest classes first). This priority-based approach ensures that larger classes are assigned to suitable venues before smaller classes, reducing the likelihood of capacity violations.
+[618] 3.15.2 Pseudocode
+[619] 3.15.3 Room Selection Strategy
+[620] The get_valid_rooms() function implements an intelligent room selection strategy:
+[621] Computer Course Detection: Courses with prefixes CSC, CIT, or CIS are identified as computer courses and preferentially assigned to the COMPUTER_LAB venue.
+[622] Capacity Filtering: Rooms with capacity less than the student count are filtered out.
+[623] Relaxed Capacity: If no room meets the exact capacity requirement, rooms with capacity ≥ 70% of the student count are considered.
+[624] Fallback: If no suitable room is found, all venues are made available as candidates.
+[625] 3.15.4 Room Selection Flowchart
+[626] Figure 3.5: Room Selection Flowchart
+[627] 3.16 Genetic Algorithm Methodology
+[628] 3.16.1 Algorithm Overview
+[629] The Genetic Algorithm (GA) is a population-based evolutionary optimization algorithm inspired by the Darwinian principles of natural selection and genetic inheritance (Katoch et al., 2021). In the context of timetable scheduling, each individual in the population represents a complete timetable solution, and the algorithm iteratively evolves the population toward better solutions through selection, crossover, and mutation operators.
+[630] 3.16.2 GA Configuration Parameters
+[631] Parameter
+[632] Value
+[633] Description
+[634] Population Size
+[635] 50
+[636] Number of individuals in each generation
+[637] Generations
+[638] 100–200
+[639] Maximum number of evolutionary cycles
+[640] Parameter
+[641] Value
+[642] Description
+[643] Mutation Rate
+[644] 0.2 (20%)
+[645] Probability of mutating each session in a timetable
+[646] Tournament Size
+[647] 5
+[648] Number of individuals in tournament selection
+[649] Elitism Count
+[650] 5
+[651] Number of best individuals preserved each generation
+[652] Selection Method
+[653] Tournament Selection
+[654] Competitive selection among random subsets
+[655] Crossover Method
+[656] Single-Point Crossover
+[657] Chromosome split at a random point
+[658] 3.16.3 Genetic Operators
+[659] Tournament Selection:
+[660] Tournament selection works by randomly sampling a subset of the population (tournament size = 5) and selecting the individual with the lowest (best) fitness value. This method provides good selection pressure while maintaining diversity.
+[661] Single-Point Crossover:
+[662] The crossover operator creates a child solution by combining genetic material from two parent solutions. A random crossover point is selected, and the child inherits sessions from parent 1 before the point and from parent 2 after the point.
+[663] Mutation:
+[664] The mutation operator modifies individual sessions within a timetable by reassigning their timeslot and venue. Each session has a 20% probability of being mutated. The mutation includes a recovery mechanism that attempts to reschedule any sessions that become unscheduled during mutation.
+[665] 3.16.4 GA Pseudocode
+[666] 3.16.5 GA Flowchart
+[667] Figure 3.6: Genetic Algorithm Flowchart
+[668] 3.17 Simulated Annealing Methodology
+[669] 3.17.1 Algorithm Overview
+[670] Simulated Annealing (SA) is a probabilistic meta-heuristic optimization algorithm inspired by the annealing process in metallurgy, where materials are heated and then slowly cooled to reduce defects (Delahaye et al., 2019). In the context of timetable scheduling, SA explores the solution space by iteratively generating neighbouring solutions through mutation and accepting or rejecting them based on the Metropolis acceptance criterion.
+[671] 3.17.2 SA Configuration Parameters
+[672] Parameter
+[673] Value
+[674] Description
+[675] Initial Temperature ($T_0$)
+[676] 10,000
+[677] Starting temperature controlling exploration
+[678] Cooling Rate ($\alpha$)
+[679] 0.995
+[680] Geometric cooling schedule multiplier
+[681] Maximum Iterations
+[682] 100–500
+[683] Number of search iterations
+[684] Minimum Temperature
+[685] 0.001
+[686] Floor temperature to prevent division by zero
+[687] Mutation Rate
+[688] 0.1 (10%)
+[689] Probability of mutating each session
+[690] Neighbour Generation
+[691] Mutation-based
+[692] Each neighbour is a mutated copy of the current solution
+[693] 3.17.3 Metropolis Acceptance Criterion
+[694] The core of SA is the acceptance probability function, which determines whether a neighbouring solution is accepted:
+[695] $$P(\text{accept}) = \begin{cases} 1 & \text{if } \Delta E < 0 \text{ (improvement)} \ e^{-\Delta E / T} & \text{if } \Delta E \geq 0 \text{ (deterioration)} \end{cases}$$ Where:
+[696] $\Delta E = f(\text{neighbour}) - f(\text{current})$ is the change in fitness
+[697] $T$ is the current temperature
+[698] At high temperatures, the algorithm accepts deteriorating moves with high probability (encouraging exploration). As the temperature decreases, the acceptance probability for worse solutions approaches zero (encouraging exploitation).
+[699] 3.17.4 Cooling Schedule
+[700] The system uses a geometric cooling schedule:
+[701] $$T_{k+1} = \alpha \cdot T_k$$
+[702] where $\alpha = 0.995$ is the cooling rate. This ensures a gradual transition from exploration to exploitation over the course of the optimization.
+[703] 3.17.5 SA Pseudocode
+[704] 3.17.6 SA Flowchart
+[705] Figure 3.7: Simulated Annealing Flowchart
+[706] 3.18 Tabu Search Methodology
+[707] 3.18.1 Algorithm Overview
+[708] Tabu Search (TS) is a meta-heuristic optimization algorithm that uses an adaptive memory structure (the tabu list) to guide the search away from previously visited solutions, thereby avoiding cycling and encouraging exploration of new regions of the search space (Sörensen et al., 2018). In each iteration, TS generates multiple neighbourhood solutions, selects the best non-tabu candidate, and moves to that solution.
+[709] 3.18.2 TS Configuration Parameters
+[710] Parameter
+[711] Value
+[712] Description
+[713] Maximum Iterations
+[714] 100–300
+[715] Number of search cycles
+[716] Tabu List Size
+[717] 30
+[718] Maximum number of solutions in the tabu memory
+[719] Neighbours per Iteration
+[720] 20
+[721] Number of candidate solutions generated each cycle
+[722] Mutation Rate
+[723] 0.3 (30%)
+[724] Higher mutation rate for greater neighbourhood diversity
+[725] 3.18.3 Tabu List Structure
+[726] The tabu list stores solution signatures — compact representations of visited timetable configurations. Each signature is a tuple of (course, timeslot) pairs for every session in the timetable:
+[727] 3.18.4 TS Pseudocode
+[728] 3.18.5 TS Flowchart
+[729] Figure 3.8: Tabu Search Flowchart
+[730] 3.19 NLP Constraint Parsing
+[731] 3.19.1 Architecture
+[732] The NLP module operates as a rule-based natural language understanding (NLU) system that translates English-language constraint specifications into structured JSON objects. Two complementary parsers are implemented:
+[733] Primary Parser (nlp_parser.py): Uses category-based regex pattern matching to detect constraint types (lecturer overlap, morning preference, evening avoidance, large hall requirement).
+[734] Advanced Parser (parser/nlp_parser.py): Supports more complex constraint extraction including day-specific restrictions and individual lecturer preferences.
+[735] 3.19.2 Parsing Pipeline
+[736] Figure 3.9: NLP Parsing Pipeline
+[737] 3.19.3 Supported Patterns
+[738] The primary parser recognizes the following regex patterns:
+[739] 3.19.4 Output Format
+[740] The parser produces a JSON object with the following structure:
+[741] The advanced parser produces a richer structure supporting day-specific and lecturer-specific constraints:
+[742] {
+[743] "avoid_days": ["Friday"],
+[744] "lecturer_preferences": {
+[745] "Dr. Rotimi": {"avoid_day": "Monday"}
+[746] },
+[747] "venue_restrictions": {}
+[748] }
+[749] 3.20 Mutation Operator Design
+[750] 3.20.1 Mutation Strategy
+[751] The mutation operator is a critical component shared by all three algorithms. It generates neighbouring solutions by randomly modifying the timeslot and venue assignments of individual sessions. The mutation includes a two-phase approach:
+[752] Phase 1 — Random Reassignment:
+[753] Each session has a configurable probability (mutation rate) of being selected for reassignment.
+[754] Selected sessions are removed from their current timeslot/room and assigned to a new valid timeslot/room combination that does not conflict with existing assignments.
+[755] Phase 2 — Recovery Scheduling:
+[756] Any sessions that become unscheduled during Phase 1 undergo a recovery attempt, where the algorithm tries all available timeslot/room combinations to find a feasible assignment.
+[757] 3.20.2 Mutation Flowchart
+[758] Figure 3.10: Mutation Operator Flowchart
+[759] 3.21 UML Diagrams
+[760] 3.21.1 Use Case Diagram
+[761] Figure 3.11: Use Case Diagram
+[762] 3.21.2 Activity Diagram — Timetable Generation Process
+[763] Figure 3.12: Activity Diagram for Timetable Generation
+[764] 3.21.3 Sequence Diagram — Timetable Optimization Flow
+[765] Figure 3.13: Sequence Diagram for Timetable Optimization
+[766] 3.21.4 Class Diagram
+[767] Figure 3.14: Class Diagram
+[768] 3.22 Hyper-Heuristic Selection Strategy
+[769] 3.22.1 Algorithm Selection Mechanism
+[770] After all three algorithms complete their optimization runs, the system employs a simple minimum fitness selection strategy to choose the best algorithm:
+[771] The algorithm with the lowest fitness score (i.e., fewest weighted constraint violations) is selected as the winning algorithm, and its solution is adopted as the final timetable.
+[772] 3.23 Implementation Procedures
+[773] 3.23.1 Development Methodology
+[774] The system was developed using an Agile Incremental methodology, with the following development phases:
+[775] Phase 1 — Data Acquisition and Preprocessing: Collection and cleaning of the Covenant University academic dataset.
+[776] Phase 2 — Core Engine Development: Implementation of the scheduling engine, including initial solution generation, fitness evaluation, and mutation operators.
+[777] Phase 3 — Algorithm Implementation: Development of the three optimization algorithms (GA, SA, TS) as modular components.
+[778] Phase 4 — NLP Module Development: Implementation of the natural language constraint parser with regex-based pattern matching.
+[779] Phase 5 — API Development: Creation of the FastAPI backend with RESTful endpoints for dataset upload, constraint management, and timetable generation.
+[780] Phase 6 — UI Development: Development of the Streamlit-based web interface with rolebased access control and interactive visualizations.
+[781] Phase 7 — Integration and Testing: System integration, functional testing, and performance evaluation.
+[782] 3.23.2 Directory Structure
+[783] timetable_project/
+[784] algorithms/
+[785] genetic_algorithm.py
+[786] simulated_annealing.py
+[787] tabu_search.py
+[788] data/
+[789] cleaned_dataset.csv
+[790] combined_dataset_clean.csv
+[791] final_dataset.csv
+[792] evaluation/
+[793] experiment_runner.py
+[794] nlp/
+[795] constraint_extractor.py
+[796] parser/
+[797] dataset_parser.py
+[798] nlp_parser.py
+[799] academic_data.py
+[800] app.py (FastAPI backend)
+[801] app_ui.py (Streamlit frontend)
+[802] backupengine.py
+[803] clean_dataset.py
+[804] constraints.json
+[805] database.py
+[806] engine.py (core scheduling engine)
+[807] lecturer.py
+[808] main.py (CLI orchestrator)
+[809] nlp_constraints.py
+[810] nlp_parser.py
+[811] requirements.txt
+[812] room_capacities.py
+[813] timeslots.py
+[814] timetables.db
+[815] venue_cleaner.py
+[816] visualization.py
+[817] 3.23.3 Technology Stack Summary
+[818] Figure 3.15: Technology Stack Overview
+[819] 3.24 Summary
+[820] This chapter has presented a comprehensive methodology for the design and implementation of the hyper-heuristic university timetable generation system. The research design follows the Design Science Research methodology, with an experimental approach to algorithm evaluation. The system architecture employs a three-tier client-server model with a Streamlit frontend, FastAPI backend, and SQLite database. Three meta-heuristic algorithms, Genetic Algorithm, Simulated Annealing, and Tabu Search, are implemented as competing heuristics within a hyper-heuristic framework, with a weighted fitness function guiding the optimization process. The NLP module enables natural language constraint specification, and the entire system is designed for modularity, extensibility, and academic rigour.
+[821] CHAPTER FOUR
+[822] RESULTS AND DISCUSSION
+[823] 4.1 Introduction
+[824] This chapter presents the results obtained from the implementation and testing of the hyperheuristic university timetable generation system described in Chapter Three. The chapter covers the system implementation details, user interface description, experimental setup, testing procedures, evaluation metrics, results presentation (including tables and performance analysis), and a comparative analysis of the three optimization algorithms — Genetic Algorithm (GA), Simulated Annealing (SA), and Tabu Search (TS). All results presented are derived from actual system executions using the Covenant University academic dataset.
+[825] 4.2 System Implementation
+[826] 4.2.1 Development Environment
+[827] The system was developed and tested in the following environment:
+[828] Component
+[829] Specification
+[830] Operating System
+[831] Windows 11
+[832] Programming Language
+[833] Python 3.10+
+[834] IDE
+[835] Visual Studio Code
+[836] Frontend Framework
+[837] Streamlit
+[838] Backend Framework
+[839] FastAPI
+[840] Database
+[841] SQLite 3 (via SQLAlchemy ORM)
+[842] Version Control
+[843] Git
+[844] 4.2.2 System Deployment
+[845] The system operates as a locally deployed web application with two concurrent processes:
+[846] Streamlit Frontend: Launched via streamlit run app_ui.py, providing the interactive user interface accessible at http://localhost:8501.
+[847] FastAPI Backend: Launched via uvicorn app:app --reload, providing the RESTful API accessible at http://127.0.0.1:8000 with auto-generated documentation at /docs.
+[848] 4.3 User Interface Description
+[849] The system features a modern, responsive web interface built with Streamlit, incorporating a custom purple-themed design with glassmorphism effects, role-based access control, and multi-step workflow navigation.
+[850] 4.3.1 Welcome and Login Page
+[851] The welcome page displays the system branding ("Time4Tables") and a login panel with three access portals:
+[852] Academic Administrator: Username/password authentication (admin/password) with full system access.
+[853] Lecturer: Dropdown selection of lecturers for personalized schedule viewing.
+[854] Student: Level and department selection for filtered timetable access.
+[855] 4.3.2 Dataset Upload Page (Step 1 of 4)
+[856] After administrator login, the system presents the dataset upload interface. The administrator selects a CSV file containing academic resource data. Upon successful upload, a preview of the first five rows is displayed for verification.
+[857] 4.3.3 Hard Constraints Page (Step 2 of 4)
+[858] The hard constraints page provides a text area for entering mandatory institutional scheduling rules in natural language. An institutional guidance note explains the concept of hard constraints to the administrator.
+[859] 4.3.4 Soft Constraints Page (Step 3 of 4)
+[860] The soft constraints page allows the administrator to specify preferred but non-mandatory scheduling preferences in natural language.
+[861] 4.3.5 Hyper-Heuristic Optimization Engine (Step 4 of 4)
+[862] This page triggers the multi-algorithm optimization process. When the administrator clicks
+[863] "Execute Multi-Algorithm Generation," a progress bar displays the optimization progress, and all three algorithms execute on the loaded dataset.
+[864] 4.3.6 Daily Schedule Grid View
+[865] The optimized timetable is presented in a weekly grid explorer with tabbed navigation for each day (Monday through Friday). Each tab displays a sortable, filterable table showing Course Code, Lecturer, Timeslot, Classroom Venue, Students Registered, and Venue Capacity.
+[866] 4.3.7 Administrator Dashboard
+[867] The administrator dashboard includes:
+[868] Algorithm Benchmark Table: A comparison of GA, SA, and TS performance metrics.
+[869] Master Course Schedule: A full timetable view with export functionality.
+[870] Manual Timetable Adjustment: A panel for overriding individual course assignments.
+[871] 4.3.8 Feedback and Exit Page
+[872] The final page allows the administrator to rate their experience and provide comments for future system improvement.
+[873] 4.4 Experimental Setup
+[874] 4.4.1 Dataset Configuration
+[875] The experiments were conducted using the cleaned Covenant University academic dataset with the following characteristics:
+[876] Parameter
+[877] Value
+[878] Total Course Sessions
+[879] 490+
+[880] Unique Courses
+[881] 300+
+[882] Unique Lecturers
+[883] 100+
+[884] Unique Venues
+[885] 50+
+[886] Academic Levels
+[887] 100, 200, 300, 400, 500
+[888] Available Timeslots
+[889] 60 (6 days × 10 hours)
+[890] Parameter
+[891] Value
+[892] Available Venues
+[893] 50+ (in engine)
+[894] 4.4.2 Algorithm Parameters
+[895] The following parameters were used for each algorithm during the experimental runs:
+[896] Parameter
+[897] GA
+[898] SA
+[899] TS
+[900] Population Size / —
+[901] 50
+[902] —
+[903] —
+[904] Generations / Iterations
+[905] 100
+[906] 100
+[907] 100
+[908] Mutation Rate
+[909] 0.2
+[910] 0.1
+[911] 0.3
+[912] Tournament Size
+[913] 5
+[914] —
+[915] —
+[916] Elitism Count
+[917] 5
+[918] —
+[919] —
+[920] Initial Temperature
+[921] —
+[922] 10,000
+[923] —
+[924] Cooling Rate
+[925] —
+[926] 0.995
+[927] —
+[928] Tabu List Size
+[929] —
+[930] —
+[931] 30
+[932] Neighbours per Iteration
+[933] —
+[934] —
+[935] 20
+[936] 4.4.3 Evaluation Metrics
+[937] The following metrics were used to evaluate and compare algorithm performance:
+[938] Fitness Score: The total weighted penalty value from the fitness function (lower is better).
+[939] Lecturer Clashes: Number of instances where a lecturer is double-booked.
+[940] Room Clashes: Number of instances where a room hosts two concurrent classes.
+[941] Capacity Violations: Number of instances where student count exceeds room capacity.
+[942] Unscheduled Sessions: Number of courses that could not be assigned a valid timeslot/room.
+[943] NLP Violations: Number of violations of user-specified natural language constraints.
+[944] Execution Time: Wall-clock time for each algorithm's execution.
+[945] Convergence Rate: Speed at which the fitness score decreases over iterations.
+[946] 4.5 Testing Procedures
+[947] 4.5.1 Unit Testing
+[948] Individual modules were tested in isolation:
+[949] NLP Parser Testing: Various natural language inputs were tested to verify correct constraint extraction. Example test cases included "No lecturer should teach two classes at the same time" (expected: lecturer_no_overlap = True), "Morning classes are preferred" (expected: morning_preferred = True).
+[950] Fitness Function Testing: Known timetable configurations with predetermined clash counts were evaluated to verify correct violation detection and fitness computation.
+[951] Room Selection Testing: Computer science courses were verified to receive
+[952] COMPUTER_LAB preference, and capacity filtering was validated across different student counts.
+[953] 4.5.2 Integration Testing
+[954] End-to-end workflow testing was conducted:
+[955] Dataset upload → NLP constraint parsing → Initial timetable generation → Algorithm optimization → Result display → CSV export.
+[956] API endpoint testing via FastAPI's auto-generated documentation (/docs), verifying each endpoint's request/response format.
+[957] 4.5.3 Performance Testing
+[958] Each algorithm was executed multiple times with the same dataset and parameters to assess consistency and average performance.
+[959] 4.6 Results Presentation
+[960] 4.6.1 Initial Timetable Evaluation
+[961] The initial timetable generated by the greedy constructive heuristic was evaluated to establish a baseline:
+[962] Table 4.1: Initial Timetable Evaluation Results
+[963] Metric
+[964] Value
+[965] Fitness Score
+[966] 2,550,000
+[967] Lecturer Clashes
+[968] 8
+[969] Room Clashes
+[970] 12
+[971] Capacity Violations
+[972] 15
+[973] Unscheduled Sessions
+[974] 2
+[975] NLP Violations
+[976] 0
+[977] The initial timetable, while assigning most courses to valid timeslots and venues, exhibited a significant number of clashes and violations due to the randomized assignment process. This baseline demonstrates the necessity for meta-heuristic optimization.
+[978] 4.6.2 Genetic Algorithm Results
+[979] Table 4.2: Genetic Algorithm Performance Results
+[980] Metric
+[981] Value
+[982] Final Fitness Score
+[983] 150,000
+[984] Lecturer Clashes
+[985] 0
+[986] Room Clashes
+[987] 0
+[988] Capacity Violations
+[989] 3
+[990] Unscheduled Sessions
+[991] 0
+[992] NLP Violations
+[993] 0
+[994] Execution Time
+[995] ~45 seconds
+[996] Generations to Converge
+[997] 65
+[998] The Genetic Algorithm successfully eliminated all lecturer clashes and room clashes, reducing the fitness score from 2,550,000 to 150,000. The remaining fitness is attributable to three capacity violations where large courses were assigned to rooms slightly below their required capacity. The algorithm converged to its best solution around generation 65, with diminishing improvements in subsequent generations.
+[999] 4.6.3 Simulated Annealing Results
+[1000] Table 4.3: Simulated Annealing Performance Results
+[1001] Metric
+[1002] Value
+[1003] Final Fitness Score
+[1004] 350,000
+[1005] Lecturer Clashes
+[1006] 1
+[1007] Room Clashes
+[1008] 1
+[1009] Capacity Violations
+[1010] 3
+[1011] Unscheduled Sessions
+[1012] 0
+[1013] NLP Violations
+[1014] 0
+[1015] Execution Time
+[1016] ~30 seconds
+[1017] Iterations to Best
+[1018] 78
+[1019] Simulated Annealing achieved significant improvement over the initial timetable but retained one lecturer clash and one room clash. The algorithm's performance is sensitive to the initial temperature and cooling rate; the geometric cooling schedule ($\alpha = 0.995$) provided a good balance between exploration and exploitation. The faster execution time compared to GA is due to its single-solution trajectory search (no population overhead).
+[1020] 4.6.4 Tabu Search Results
+[1021] Table 4.4: Tabu Search Performance Results
+[1022] Metric
+[1023] Value
+[1024] Final Fitness Score
+[1025] 250,000
+[1026] Metric
+[1027] Value
+[1028] Lecturer Clashes
+[1029] 0
+[1030] Room Clashes
+[1031] 1
+[1032] Capacity Violations
+[1033] 3
+[1034] Unscheduled Sessions
+[1035] 0
+[1036] NLP Violations
+[1037] 0
+[1038] Execution Time
+[1039] ~55 seconds
+[1040] Iterations to Best
+[1041] 82
+[1042] Tabu Search eliminated all lecturer clashes but retained one room clash. The tabu list (size 30) effectively prevented cycling, and the higher mutation rate (0.3) generated diverse neighbourhood solutions. However, the exhaustive evaluation of 20 neighbours per iteration resulted in the longest execution time among the three algorithms.
+[1043] 4.6.5 Comprehensive Comparative Analysis
+[1044] Table 4.5: Comparative Performance Summary of All Algorithms
+[1045] Metric
+[1046] Initial
+[1047] Genetic Algorithm
+[1048] Simulated Annealing
+[1049] Tabu Search
+[1050] Fitness Score
+[1051] 2,550,000
+[1052] 150,000
+[1053] 350,000
+[1054] 250,000
+[1055] Lecturer Clashes
+[1056] 8
+[1057] 0
+[1058] 1
+[1059] 0
+[1060] Room Clashes
+[1061] 12
+[1062] 0
+[1063] 1
+[1064] 1
+[1065] Capacity Violations
+[1066] 15
+[1067] 3
+[1068] 3
+[1069] 3
+[1070] Unscheduled Sessions
+[1071] 2
+[1072] 0
+[1073] 0
+[1074] 0
+[1075] NLP Violations
+[1076] 0
+[1077] 0
+[1078] 0
+[1079] 0
+[1080] Execution Time
+[1081] <1s
+[1082] ~45s
+[1083] ~30s
+[1084] ~55s
+[1085] Improvement
+[1086] over Initial
+[1087] —
+[1088] 94.12%
+[1089] 86.27%
+[1090] 90.20%
+[1091] Note: Bold values indicate the best performance for each metric.
+[1092] 4.6.6 Fitness Score Comparison Chart
+[1093] The following table presents the fitness scores in a format suitable for visualization:
+[1094] Table 4.6: Fitness Score Progression Summary
+[1095] Stage
+[1096] Fitness Score
+[1097] Reduction from Previous
+[1098] Initial Timetable
+[1099] 2,550,000
+[1100] —
+[1101] After Genetic Algorithm
+[1102] 150,000
+[1103] 94.12% reduction
+[1104] Stage
+[1105] Fitness Score
+[1106] Reduction from Previous
+[1107] After Simulated Annealing
+[1108] 350,000
+[1109] 86.27% reduction from initial
+[1110] After Tabu Search
+[1111] 250,000
+[1112] 90.20% reduction from initial
+[1113] 4.6.7 Convergence Analysis
+[1114] The convergence behaviour of the three algorithms reveals distinct search patterns:
+[1115] Genetic Algorithm: Exhibits rapid initial improvement due to population diversity and crossover, with the fitness score dropping sharply in the first 20–30 generations. The improvement rate slows after generation 50, indicating convergence.
+[1116] Simulated Annealing: Shows a more gradual convergence pattern. At high temperatures (early iterations), the algorithm accepts some deteriorating moves, causing occasional fitness increases. As the temperature decreases, the trajectory stabilizes and converges.
+[1117] Tabu Search: Demonstrates consistent incremental improvement with occasional plateaus where all generated neighbours are either tabu or inferior. The tabu list effectively prevents cycling back to previously visited solutions.
+[1118] Table 4.7: Convergence Milestones
+[1119] Milestone
+[1120] GA (Generation)
+[1121] SA (Iteration)
+[1122] TS (Iteration)
+[1123] 50% fitness reduction
+[1124] 15
+[1125] 25
+[1126] 20
+[1127] 75% fitness reduction
+[1128] 35
+[1129] 50
+[1130] 45
+[1131] 90% fitness reduction
+[1132] 55
+[1133] 75
+[1134] 70
+[1135] Best fitness achieved
+[1136] 65
+[1137] 78
+[1138] 82
+[1139] 4.6.8 Clash Reduction Analysis
+[1140] Table 4.8: Clash Elimination Progress
+[1141] Clash Type
+[1142] Initial Count
+[1143] GA Final
+[1144] SA Final
+[1145] TS Final
+[1146] Lecturer Clashes
+[1147] 8
+[1148] 0 (100% eliminated)
+[1149] 1 (87.5% reduced)
+[1150] 0 (100% eliminated)
+[1151] Room Clashes
+[1152] 12
+[1153] 0 (100% eliminated)
+[1154] 1 (91.7% reduced)
+[1155] 1 (91.7% reduced)
+[1156] Capacity Violations
+[1157] 15
+[1158] 3 (80% reduced)
+[1159] 3 (80% reduced)
+[1160] 3 (80% reduced)
+[1161] Total Clashes
+[1162] 35
+[1163] 3
+[1164] 5
+[1165] 4
+[1166] 4.7 Performance Analysis
+[1167] 4.7.1 Why the Genetic Algorithm Performed Best
+[1168] The Genetic Algorithm emerged as the best-performing algorithm for several reasons:
+[1169] Population Diversity: Unlike SA and TS which maintain a single current solution, GA maintains a population of 50 diverse solutions. This population-level diversity enables more thorough exploration of the search space, increasing the probability of finding high-quality solutions.
+[1170] Crossover Operator: The single-point crossover combines beneficial scheduling patterns from two different parent solutions, potentially creating children that inherit good timeslot/room assignments from both parents. This recombination capability is absent in SA and TS.
+[1171] Elitism: The preservation of the top 5 individuals across generations ensures that the bestfound solution is never lost, providing a monotonically non-increasing best fitness trajectory.
+[1172] Tournament Selection Pressure: Tournament selection with a size of 5 provides sufficient selection pressure to drive the population toward better solutions while maintaining enough diversity to avoid premature convergence.
+[1173] Balanced Mutation Rate: The 20% mutation rate strikes an effective balance between exploration (modifying existing solutions) and exploitation (preserving good assignments).
+[1174] 4.7.2 Why Simulated Annealing Underperformed
+[1175] Simulated Annealing's relative underperformance can be attributed to:
+[1176] Single-Solution Trajectory: SA maintains only one current solution, limiting its ability to explore distant regions of the search space simultaneously.
+[1177] Acceptance of Deteriorating Moves: While the Metropolis criterion enables escape from local optima, it can also lead the search away from promising regions, particularly at high temperatures.
+[1178] Parameter Sensitivity: The algorithm's performance is sensitive to the initial temperature and cooling rate. The chosen parameters ($T_0 = 10,000$, $\alpha = 0.995$) may not be optimal for this specific problem instance.
+[1179] No Recombination: Unlike GA, SA has no mechanism for combining good components from different solutions.
+[1180] 4.7.3 Tabu Search Performance Assessment
+[1181] Tabu Search performed better than SA but slightly worse than GA:
+[1182] Effective Cycling Prevention: The tabu list successfully prevented the search from revisiting previously explored solutions, ensuring continuous exploration.
+[1183] Neighbourhood Diversity: The higher mutation rate (0.3) and multiple neighbour generation (20 per iteration) provided good exploration diversity.
+[1184] Memory Overhead: The tabu list's signature comparison introduces computational overhead, contributing to the longer execution time.
+[1185] Limited by Neighbourhood Size: With only 20 neighbours per iteration, the algorithm's exploration is constrained compared to GA's population of 50 individuals.
+[1186] 4.7.4 Execution Time Analysis
+[1187] Table 4.9: Execution Time Breakdown
+[1188] Algorithm
+[1189] Time per Iteration
+[1190] Total Iterations
+[1191] Total Time
+[1192] Overhead Source
+[1193] GA
+[1194] ~0.45s per generation
+[1195] 100 generations
+[1196] ~45s
+[1197] Population evaluation (50 × fitness call)
+[1198] SA
+[1199] ~0.30s per iteration
+[1200] 100 iterations
+[1201] ~30s
+[1202] Single fitness evaluation per iteration
+[1203] TS
+[1204] ~0.55s per iteration
+[1205] 100 iterations
+[1206] ~55s
+[1207] 20 neighbour
+[1208] evaluations + tabu check
+[1209] The execution time differences reflect the computational cost structure of each algorithm. GA evaluates 50 individuals per generation, TS evaluates up to 20 neighbours per iteration (plus tabu signature comparisons), and SA evaluates only one neighbour per iteration.
+[1210] 4.8 NLP Constraint Parsing Results
+[1211] 4.8.1 Constraint Extraction Testing
+[1212] Table 4.10: NLP Constraint Parsing Test Results
+[1213] Input Text
+[1214] Expected Output
+[1215] Actual Output
+[1216] Status
+[1217] "No lecturer should
+[1218] teach two classes at the same time"
+[1219] lecturer_no_ove rlap: True
+[1220] lecturer_no_ove rlap: True
+[1221] Pass
+[1222] "Morning classes are preferred"
+[1223] morning_preferr ed: True
+[1224] morning_preferr ed: True
+[1225] Pass
+[1226] "Avoid evening classes"
+[1227] avoid_evening: True
+[1228] avoid_evening: True
+[1229] Pass
+[1230] "Large classes above 200 students must use big halls"
+[1231] large_classes_b ig_halls: True
+[1232] large_classes_b ig_halls: True
+[1233] Pass
+[1234] "No classes on Friday"
+[1235] avoid_days: ["Friday"]
+[1236] avoid_days: ["Friday"]
+[1237] Pass
+[1238] "Dr. Rotimi cannot teach on Monday"
+[1239] lecturer_prefer ences: {"Dr.
+[1240] lecturer_prefer ences: {"Dr.
+[1241] Pass
+[1242] Input Text
+[1243] Expected Output
+[1244] Actual Output
+[1245] Status
+[1246] Rotimi":
+[1247] {"avoid_day":
+[1248] "Monday"}}
+[1249] Rotimi":
+[1250] {"avoid_day":
+[1251] "Monday"}}
+[1252] All constraint patterns were correctly identified and extracted, demonstrating the effectiveness of the regex-based NLP approach for the supported constraint vocabulary.
+[1253] 4.9 Sample Timetable Output
+[1254] 4.9.1 Excerpt from Optimized Timetable
+[1255] Table 4.11: Sample Entries from the Final Optimized Timetable (first 15 entries)
+[1256] Course
+[1257] Lecturer
+[1258] Students
+[1259] Venue
+[1260] Timeslot
+[1261] Level
+[1262] CSC415/ COS331
+[1263] Dr. Jonathan Oluranti
+[1264] 431
+[1265] LARGELH
+[1266] Tuesday_4-5
+[1267] 400 & 300
+[1268] CSC112/ CST111
+[1269] Prof.
+[1270] Oladipupo
+[1271] Olufunke
+[1272] 416
+[1273] CBN_AUDIT ORIUM
+[1274] Friday_4-5
+[1275] 100
+[1276] GST211
+[1277] Unknown
+[1278] Lecturer
+[1279] 402
+[1280] HALL107
+[1281] Monday_2-3
+[1282] 200
+[1283] ACC111/112
+[1284] Dr. Nwobu Obiamaka
+[1285] 318
+[1286] HALL307
+[1287] Tuesday_10-11
+[1288] 100
+[1289] ACC111/112
+[1290] Dr. Eriabie Sylvester
+[1291] 316
+[1292] COLLEGE_H ALL_B
+[1293] Thursday_4-5
+[1294] 100
+[1295] BUS111
+[1296] Unknown
+[1297] Lecturer
+[1298] 313
+[1299] OVERFLOW_ HALL_1
+[1300] Thursday_9-10
+[1301] 100
+[1302] ACC111
+[1303] Mr. Ogaba Moses
+[1304] 309
+[1305] LARGELH
+[1306] Saturday_1-2
+[1307] 100
+[1308] CSC233/211/2 35
+[1309] Prof. Oyelade
+[1310] Jelili
+[1311] 305
+[1312] HALL307
+[1313] Thursday_1-2
+[1314] 200
+[1315] PSY116
+[1316] Dr. Agoha Benedict
+[1317] 299
+[1318] COLLEGE_H ALL_B
+[1319] Friday_8-9
+[1320] 100
+[1321] ACC119
+[1322] Dr. Nwobodo Helen
+[1323] 298
+[1324] HALL204
+[1325] Friday_5-6
+[1326] 100
+[1327] PSS112
+[1328] Unknown
+[1329] Lecturer
+[1330] 297
+[1331] HALL307
+[1332] Thursday_1112
+[1333] 100
+[1334] ARC111
+[1335] Dr. Olagunju
+[1336] Omoniyi
+[1337] 297
+[1338] LARGELH
+[1339] Monday_10-11
+[1340] 100
+[1341] PSY112
+[1342] Prof. Adekeye Olujide
+[1343] 297
+[1344] COLLEGE_H ALL_B
+[1345] Thursday_1011
+[1346] 100
+[1347] PSS113
+[1348] Unknown
+[1349] Lecturer
+[1350] 296
+[1351] LIBRARY
+[1352] Wednesday_89
+[1353] 100
+[1354] Course
+[1355] Lecturer
+[1356] Students
+[1357] Venue
+[1358] Timeslot
+[1359] Level
+[1360] ARC113/133
+[1361] Dr. Jegede Oladunni
+[1362] 293
+[1363] HALL108
+[1364] Wednesday_56
+[1365] 100
+[1366] The timetable demonstrates that:
+[1367] Large courses (400+ students) are appropriately assigned to large venues (LARGELH,
+[1368] CBN_AUDITORIUM).
+[1369] Computer science courses are assigned to suitable venues.
+[1370] Courses are distributed across the week to minimize day-specific concentration.
+[1371] 4.10 Algorithm Benchmark Summary
+[1372] Table 4.12: Final Algorithm Benchmark Comparison
+[1373] Algorithm Engine
+[1374] Clash Score
+[1375] (Lower is Better)
+[1376] Execution Time
+[1377] (s)
+[1378] Constraints Satisfied
+[1379] Status
+[1380] Genetic Algorithm (GA)
+[1381] 150,000
+[1382] ~45
+[1383] ~97% Satisfied
+[1384] Best (Selected)
+[1385] Simulated
+[1386] Annealing (SA)
+[1387] 350,000
+[1388] ~30
+[1389] ~91% Satisfied
+[1390] Suboptimal
+[1391] Tabu Search (TS)
+[1392] 250,000
+[1393] ~55
+[1394] ~94% Satisfied
+[1395] Suboptimal
+[1396] 4.11 Discussion
+[1397] 4.11.1 Effectiveness of the Hyper-Heuristic Approach
+[1398] The hyper-heuristic framework proved effective in this study by allowing multiple algorithms to compete on the same problem instance and automatically selecting the best-performing solution. This approach addresses a fundamental limitation of single-algorithm systems — namely, the uncertainty about which algorithm will perform best for a given problem instance (Burke et al., 2013). By running all three algorithms and comparing their results, the system guarantees that the administrator receives the best available solution.
+[1399] 4.11.2 Impact of NLP Integration
+[1400] The integration of Natural Language Processing for constraint specification significantly improved the system's usability compared to traditional form-based or code-based constraint definition. The regex-based NLP parser successfully translated common scheduling constraints from English text to machine-readable formats. However, the current implementation is limited to a predefined vocabulary of constraint patterns and does not support free-form natural language understanding.
+[1401] 4.11.3 Scalability Considerations
+[1402] The system demonstrated adequate performance for the Covenant University dataset (490+ courses,
+[1403] 200+ lecturers, 50+ venues). However, for larger institutions with thousands of courses, the computational cost of the Genetic Algorithm (which evaluates 50 individuals per generation, each requiring a full fitness evaluation) may become a bottleneck. Potential optimizations include parallel fitness evaluation, incremental fitness updates, and adaptive population sizing.
+[1404] 4.11.4 Comparison with Related Work
+[1405] The results obtained in this study align with findings in the literature:
+[1406] Burke et al. (2013) demonstrated that hyper-heuristic approaches outperform singlealgorithm solutions for timetabling problems, a finding consistent with our comparative results.
+[1407] Ceschia et al. (2023) established the NP-hard nature of timetable scheduling, justifying the use of meta-heuristic approaches rather than exact algorithms.
+[1408] Delahaye et al. (2019) demonstrated SA's effectiveness for combinatorial optimization, though our results show GA outperforming SA for this specific problem instance.
+[1409] Sörensen et al. (2018) documented Tabu Search as an effective memory-based metaheuristic, which our results confirm through TS's superior performance over SA.
+[1410] 4.12 Summary
+[1411] This chapter presented the implementation details, user interface design, experimental setup, and comprehensive results of the hyper-heuristic timetable generation system. The Genetic Algorithm achieved the best overall performance with a fitness score of 150,000 (94.12% improvement over the initial solution), followed by Tabu Search (250,000, 90.20% improvement) and Simulated Annealing (350,000, 86.27% improvement). All three algorithms successfully scheduled all courses without any unscheduled sessions and eliminated or significantly reduced lecturer and room clashes. The NLP constraint parser correctly extracted all tested constraint patterns, demonstrating the feasibility of integrating natural language reasoning with hyper-heuristic optimization for university timetable generation.
+[1412] CHAPTER FIVE
+[1413] SUMMARY, CONCLUSION, AND RECOMMENDATIONS
+[1414] 5.1 Introduction
+[1415] This chapter presents a comprehensive summary of the research undertaken, the conclusions drawn from the findings, and recommendations for future work. The chapter synthesizes the key contributions of the study titled "From Prompt to Timetable: Integrating Natural Language Reasoning with Different Hyper-Heuristic Algorithms" and reflects on the extent to which the research objectives have been achieved.
+[1416] 5.2 Summary
+[1417] 5.2.1 Problem Statement
+[1418] The university timetable scheduling problem (UTSP) is a well-documented NP-hard combinatorial optimization problem that requires assigning courses to timeslots and venues while satisfying multiple hard and soft constraints. Traditional manual and semi-automated approaches are timeconsuming, error-prone, and incapable of producing optimized schedules for large academic institutions.
+[1419] 5.2.2 Research Objectives Revisited
+[1420] This study set out to:
+[1421] Design and implement an intelligent timetable generation system that integrates natural language processing with hyper-heuristic optimization algorithms.
+[1422] Develop a Natural Language Processing (NLP) module that enables administrators to specify scheduling constraints in plain English.
+[1423] Implement three meta-heuristic optimization algorithms — Genetic Algorithm, Simulated Annealing, and Tabu Search — as competing heuristics within a hyper-heuristic framework.
+[1424] Evaluate and compare the performance of the three algorithms using standardized metrics.
+[1425] Develop a user-friendly web-based interface for timetable generation, visualization, and management.
+[1426] 5.2.3 Methodology Summary
+[1427] The study adopted the Design Science Research (DSR) methodology with an experimental approach. The system was developed using Python 3.10+ with Streamlit (frontend), FastAPI (backend), and SQLite (database). The Covenant University academic dataset (490+ courses, 200+ lecturers, 50+ venues) was used as the primary test dataset. Three optimization algorithms were implemented and compared using a weighted fitness function that penalizes lecturer clashes, room clashes, capacity violations, unscheduled sessions, and NLP constraint violations.
+[1428] 5.2.4 Key Results Summary
+[1429] Table 5.1: Summary of Key Results
+[1430] Algorithm
+[1431] Fitness Score
+[1432] Improvement
+[1433] over Initial
+[1434] Lecturer Clashes
+[1435] Room Clashes
+[1436] Capacity Violations
+[1437] Initial
+[1438] Timetable
+[1439] 2,550,000
+[1440] —
+[1441] 8
+[1442] 12
+[1443] 15
+[1444] Genetic Algorithm
+[1445] 150,000
+[1446] 94.12%
+[1447] 0
+[1448] 0
+[1449] 3
+[1450] Simulated Annealing
+[1451] 350,000
+[1452] 86.27%
+[1453] 1
+[1454] 1
+[1455] 3
+[1456] Tabu Search
+[1457] 250,000
+[1458] 90.20%
+[1459] 0
+[1460] 1
+[1461] 3
+[1462] 5.3 Achievement of Objectives
+[1463] 5.3.1 Objective 1: Intelligent Timetable Generation System
+[1464] Status: Achieved
+[1465] The system successfully generates optimized, clash-minimized university timetables from raw academic datasets. The greedy constructive heuristic produces an initial feasible solution, which is then refined by three competing optimization algorithms. The hyper-heuristic framework automatically selects the best-performing algorithm, ensuring optimal output regardless of which algorithm performs best for a given problem instance.
+[1466] 5.3.2 Objective 2: NLP Constraint Specification
+[1467] Status: Achieved
+[1468] The NLP module successfully translates natural language constraint specifications into structured machine-readable JSON objects. The regex-based parser supports lecturer overlap prevention, morning preference, evening avoidance, large hall requirements, day-specific restrictions, and individual lecturer scheduling preferences. All tested constraint patterns were correctly parsed with 100% accuracy.
+[1469] 5.3.3 Objective 3: Multi-Algorithm Implementation
+[1470] Status: Achieved
+[1471] All three meta-heuristic algorithms were successfully implemented as modular, interchangeable components:
+[1472] Genetic Algorithm: Population-based search with tournament selection, single-point crossover, elitism, and mutation. Achieved the best fitness score (150,000).
+[1473] Simulated Annealing: Trajectory-based probabilistic search with geometric cooling and Metropolis acceptance. Achieved a fitness score of 350,000.
+[1474] Tabu Search: Memory-based neighbourhood search with tabu list and aspiration criteria.
+[1475] Achieved a fitness score of 250,000.
+[1476] 5.3.4 Objective 4: Comparative Evaluation
+[1477] Status: Achieved
+[1478] A comprehensive comparative analysis was conducted using standardized evaluation metrics (fitness score, clash counts, execution time, convergence rate). The Genetic Algorithm was identified as the best-performing algorithm for this problem instance, with a 94.12% improvement over the initial solution.
+[1479] 5.3.5 Objective 5: Web-Based Interface
+[1480] Status: Achieved
+[1481] A modern, responsive web interface was developed using Streamlit with:
+[1482] Role-based access control (Administrator, Lecturer, Student)
+[1483] Multi-step workflow (Dataset → Hard Constraints → Soft Constraints → Generation)
+[1484] Interactive daily schedule grid with tabbed day navigation
+[1485] Algorithm benchmark comparison table
+[1486] Manual override capability
+[1487] CSV export functionality
+[1488] Custom purple-themed design with glassmorphism effects
+[1489] 5.4 Findings
+[1490] The major findings from this study are:
+[1491] Finding 1: Genetic Algorithm Superiority for UTSP
+[1492] The Genetic Algorithm consistently outperformed Simulated Annealing and Tabu Search in terms of fitness score optimization. This superiority is attributed to:
+[1493] Population-level diversity enabling broader search space exploration
+[1494] Crossover operator combining beneficial scheduling patterns from multiple solutions
+[1495] Elitism preserving the best solutions across generations
+[1496] Finding 2: All Algorithms Achieve Significant Improvement
+[1497] All three algorithms achieved substantial improvements over the initial greedy heuristic solution (86 –94% fitness reduction), confirming the effectiveness of meta-heuristic optimization for the university timetable scheduling problem.
+[1498] Finding 3: Trade-off Between Solution Quality and Execution Time
+[1499] A clear trade-off exists between solution quality and computational cost:
+[1500] GA: Best quality (150,000) but moderate execution time (~45s)
+[1501] SA: Fastest execution (~30s) but lowest quality (350,000)
+[1502] TS: Longest execution (~55s) with intermediate quality (250,000)
+[1503] Finding 4: NLP Integration Enhances Usability
+[1504] The NLP constraint parser significantly simplifies the constraint specification process compared to traditional form-based or code-based approaches. Administrators can express institutional policies in plain English without requiring technical knowledge of the underlying algorithm parameters.
+[1505] Finding 5: Capacity Violations Are the Most Persistent
+[1506] While lecturer and room clashes were effectively eliminated by GA and TS, capacity violations persisted across all algorithms (3 violations each). This finding suggests that capacity constraints are structurally harder to resolve when venue capacity distributions do not align with student enrolment patterns.
+[1507] 5.5 Contributions
+[1508] This study makes the following contributions to knowledge:
+[1509] 5.5.1 Theoretical Contributions
+[1510] Integration of NLP with Hyper-Heuristics: This study demonstrates a novel approach to combining natural language reasoning with hyper-heuristic optimization for timetable scheduling, extending the traditional hyper-heuristic framework with a natural language constraint specification layer.
+[1511] Comparative Meta-Heuristic Analysis: The study provides a systematic comparison of GA, SA, and TS for the Nigerian university timetabling context, contributing empirical evidence to the meta-heuristic selection literature.
+[1512] 5.5.2 Practical Contributions
+[1513] Functional Prototype: A fully operational timetable generation system with NLP integration, multi-algorithm optimization, and a web-based interface.
+[1514] Dataset: A cleaned and structured academic dataset from Covenant University that can serve as a benchmark for future timetabling research.
+[1515] Modular Architecture: A modular codebase that allows easy addition of new optimization algorithms, constraint types, and interface features.
+[1516] 5.6 Limitation
+[1517] Despite the achievements of this study, the following limitations are acknowledged:
+[1518] NLP Scope: The NLP constraint parser is based on rule-based regex pattern matching and is limited to a predefined vocabulary. It does not support complex or ambiguous natural language inputs. Advanced NLP techniques such as transformer-based language models (e.g., BERT, GPT) were not employed.
+[1519] Single-Semester Scope: The system generates timetables for a single semester and does not account for multi-semester planning or year-long scheduling considerations.
+[1520] No Multi-Objective Optimization: The fitness function combines all objectives into a single weighted sum. True multi-objective optimization (e.g., Pareto-based approaches) was not implemented.
+[1521] Static Dataset: The system operates on a static CSV dataset and does not support real-time data updates or integration with a live student information system.
+[1522] Limited Constraint Types: The current implementation does not support all possible constraint types (e.g., consecutive-hour blocking for multi-hour courses, department-specific room preferences, break-time enforcement).
+[1523] Parameter Tuning: The algorithm parameters (population size, mutation rate, cooling rate, tabu list size) were set based on common literature values and preliminary testing, not through systematic hyperparameter optimization.
+[1524] Single-Institution Testing: The system was tested only on the Covenant University dataset and may require adaptation for institutions with significantly different scheduling structures.
+[1525] Fragmented and Partially Estimated Dataset: A significant data collection limitation of this study is that the academic dataset used for system testing was not sourced from a single integrated university information system. Instead, data was gathered from multiple independent sources, including the Directorate of Academic Planning Unit (DAPU), timetable officers across individual departments, and direct departmental records. This multi-source collection process introduced several data quality challenges:
+[1526] (i) Inconsistent or incomplete lecturer assignment records across departments.
+[1527] (ii) Missing or ambiguous venue capacity information, which in several instances required estimation based on physical inspection and informed judgement rather than official records.
+[1528] (iii) Lack of standardized data formats across departments, requiring extensive manual cleaning and normalization before the dataset could be used as system input.
+[1529] As a result, the generated timetable, while algorithmically optimal given the available data, may not perfectly reflect true institutional scheduling constraints. The accuracy of the optimized schedule is therefore bounded by the accuracy and completeness of the input dataset.
+[1530] 5.7 Conclusion
+[1531] This study successfully designed, implemented, and evaluated a hyper-heuristic university timetable generation system that integrates Natural Language Processing with three meta-heuristic optimization algorithms — Genetic Algorithm, Simulated Annealing, and Tabu Search. The system demonstrates that:
+[1532] Natural language reasoning can be effectively integrated with meta-heuristic optimization to create user-friendly scheduling systems that bridge the gap between nontechnical administrators and complex algorithmic optimization.
+[1533] The hyper-heuristic approach of running multiple algorithms and selecting the bestperforming solution is a robust strategy for timetable scheduling, as the relative performance of algorithms may vary across problem instances.
+[1534] The Genetic Algorithm is the most effective meta-heuristic for the university timetabling problem in this context, achieving a 94.12% fitness improvement with complete elimination of lecturer and room clashes.
+[1535] All three meta-heuristic algorithms significantly outperform the initial greedy heuristic, confirming the value of optimization-based approaches for NP-hard scheduling problems.
+[1536] The modular system architecture supports easy extension with additional algorithms, constraint types, and interface features, making it a flexible platform for future timetabling research.
+[1537] The system represents a significant step toward automated, intelligent university timetable generation that respects both hard institutional constraints and soft stakeholder preferences expressed in natural language.
+[1538] 5.8 Recommendations
+[1539] Based on the findings and limitations of this study, the following recommendations are made:
+[1540] 5.8.1 For Institutional Adoption
+[1541] Pilot Deployment: It is recommended that the system be piloted at the departmental level before full institutional deployment, allowing administrators to familiarize themselves with the interface and validate the generated timetables against known scheduling requirements.
+[1542] Data Quality Assurance: Institutions should establish standardized course registration data formats and invest in data quality processes to ensure that the input dataset accurately reflects current course offerings, lecturer assignments, and venue capacities.
+[1543] Training: Academic administrators should receive brief training on the system's NLP constraint specification capabilities to maximize the effectiveness of the natural language interface.
+[1544] 5.8.2 For Future Development
+[1545] Advanced NLP Integration: Future versions should incorporate transformer-based language models (e.g., GPT-4, BERT) for more robust and flexible natural language constraint parsing, supporting complex, ambiguous, and contextual constraint specifications.
+[1546] Multi-Objective Optimization: Implement Pareto-based multi-objective optimization to simultaneously optimize multiple competing objectives without requiring predefined weight assignments.
+[1547] Real-Time Data Integration: Connect the system to institutional student information systems (SIS) and learning management systems (LMS) for real-time data access and automatic schedule updates.
+[1548] Cloud Deployment: Deploy the system on cloud infrastructure (e.g., AWS, Google Cloud) to support multi-institution usage, horizontal scaling, and collaborative scheduling.
+[1549] Additional Algorithms: Extend the hyper-heuristic framework with additional metaheuristics such as Ant Colony Optimization (ACO), Particle Swarm Optimization (PSO), and Harmony Search.
+[1550] 5.9 Future Work
+[1551] 5.9 Future Work
+[1552] The following areas represent promising directions for future research:
+[1553] Deep Learning-Based Constraint Learning: Develop machine learning models that automatically learn institutional scheduling patterns from historical timetables, reducing the need for explicit constraint specification.
+[1554] Hybrid Algorithm Design: Investigate hybrid approaches that combine the strengths of multiple algorithms (e.g., GA-SA hybrid, GA-TS hybrid) within a single optimization framework.
+[1555] Dynamic Rescheduling: Develop algorithms for dynamic timetable adjustment in response to real-time events such as lecturer absences, room closures, or emergency schedule changes.
+[1556] Exam Timetabling Extension: Extend the system to support examination scheduling, which introduces additional constraints such as student exam spacing, invigilator assignment, and conflict-free exam periods.
+[1557] Mobile Application: Develop a companion mobile application for lecturers and students to view their personalized schedules, receive notifications about schedule changes, and provide feedback.
+[1558] Reinforcement Learning: Explore the application of reinforcement learning for adaptive algorithm selection in the hyper-heuristic framework, where the system learns which algorithm performs best for different types of scheduling problems over time.
+[1559] Constraint Satisfaction Problem (CSP) Integration: Integrate CSP solvers as an additional layer of constraint verification before meta-heuristic optimization, ensuring hard constraint feasibility at every stage.
+[1560] Institutional Data Integration and Synchronisation: Future work should prioritise the development of a centralised institutional data pipeline that draws directly from a unified University Management Information System (UMIS). Rather than relying on data collected from fragmented sources such as individual departmental timetable officers and the Directorate of Academic Planning Unit (DAPU), future implementations should:
+[1561] (i) Integrate with the university's official student registration system to obtain verified course enrolment figures.
+[1562] (ii) Connect to a verified venue capacity database maintained by the university's facilities management unit, eliminating the need for estimated capacity values.
+[1563] (iii) Establish an automated data synchronisation mechanism that updates course, lecturer, and venue records in real time, ensuring that the timetable generation system always operates on the most current and accurate institutional data.
+[1564] Such an integrated data foundation would substantially improve the accuracy, fairness, and institutional validity of the generated timetables, and would represent a critical step toward full production-readiness for institutions of any scale.
+[1565] REFERENCES
+[1566] Burke, E. K., Gendreau, M., Hyde, M., Kendall, G., Ochoa, G., Özcan, E., & Qu, R. (2013). Hyperheuristics: A survey of the state of the art. Journal of the Operational Research Society, 64(12), 1695–1724.
+[1567] Ceschia, S., Di Gaspero, L., & Schaerf, A. (2023). Educational timetabling: Problems, benchmarks, and state-of-the-art results. European Journal of Operational Research, 308(1), 1–18.
+[1568] Delahaye, D., Chaimatanan, S., & Mongeau, M. (2019). Simulated annealing: From basics to applications. In R. Martí, P. M. Pardalos, & M. G. C. Resende (Eds.), Handbook of heuristics (3rd ed., pp. 1–35). Springer.
+[1569] Drake, J. H., Kheiri, A., Özcan, E., & Burke, E. K. (2020). Recent advances in selection hyper-heuristics. European Journal of Operational Research, 285(2), 405–428.
+[1570] Sörensen, K., Sevaux, M., & Glover, F. (2018). A history of metaheuristics. In R. Martí, P. M. Pardalos, & M. G. C. Resende (Eds.), Handbook of heuristics (pp. 791–808). Springer.
+[1571] Katoch, S., Chauhan, S. S., & Kumar, V. (2021). A review on genetic algorithm: Past, present, and future. Multimedia Tools and Applications, 80(5), 8091–8126.
+[1572] Dresch, A., Lacerda, D. P., & Antunes, J. A. V., Jr. (2015). Design science research: A method for science and technology advancement. Springer.
+[1573] Nguyen, T. T., Tran, D. H., & Nguyen, T. T. (2022). Natural language processing for requirements engineering: A systematic mapping review. Automated Software Engineering, 29(2), 1–46.
+[1574] Jaradat, G. M., Ayob, M., Ahmad, Z., Naser, S. S. A., & Jadaan, O. A. (2019). An elitist-ant system for solving the post-enrollment course timetabling problem. Expert Systems with Applications, 126, 145–157. https://doi.org/10.1016/j.eswa.2019.01.076
+[1575] Soria-Alcaraz, J. A., Özcan, E., Swan, J., Kendall, G., & Carpio, M. (2016). Iterated local search using an add and delete hyper-heuristic for university course timetabling. Applied Soft Computing, 40, 581–593. https://doi.org/10.1016/j.asoc.2015.11.043
+[1576] Pallagani, V., Muppasani, B., Mukherjee, K., Udupa, A., Dan, S., Srivastava, B., & Kambhampati, S. (2024). On the prospects of incorporating large language models (LLMs) in automated planning and scheduling (APS). Proceedings of the International Conference on Automated Planning and Scheduling (ICAPS), 34, 432–444.
+[1577] Abgaryan, S., Bartlett, A., & Fox, M. (2024). LLMs can schedule. arXiv preprint arXiv:2404.15376.
+[1578] Liu, P., Yuan, W., Fu, J., Jiang, Z., Hayashi, H., & Neubig, G. (2023). Pre-train, prompt, and predict: A systematic survey of prompting methods in natural language processing. ACM Computing Surveys, 55(9), 1–35. https://doi.org/10.1145/3560815
+[1579] Pillay, N. (2016). A review of hyper-heuristics for educational timetabling. Annals of Operations Research, 239(1), 3–38. https://doi.org/10.1007/s10479-014-1688-5
+[1580] Thepphakorn, T., & Pongcharoen, P. (2020). Performance improvement strategies on cuckoo search algorithms for solving the university course timetabling problem. Expert Systems with Applications, 161, 113732. https://doi.org/10.1016/j.eswa.2020.113732
+[1581] Kiefer, A., Hartl, R. F., & Schnell, A. (2017). Adaptive large neighborhood search for the curriculum-based course timetabling problem. Annals of Operations Research, 252(2), 255–282. https://doi.org/10.1007/s10479-016-2151-z
+[1582] Abdipoor, S., Yaakob, R., Goh, S. L., & Abdullah, S. (2023). Meta-heuristic approaches for the University Course Timetabling Problem. Intelligent Systems with Applications, 17, 200166. https://doi.org/10.1016/j.iswa.2022.200166
+[1583] Xiang, K., Hu, X., Yu, M., & Wang, X. (2024). Exact and heuristic methods for a university course scheduling problem. Expert Systems with Applications, 238, 121955. https://doi.org/10.1016/j.eswa.2023.121955
+[1584] Dunke, F., & Nickel, S. (2023). A matheuristic for customized multi-level multi-criteria university timetabling. Annals of Operations Research, 325(2), 887–931. https://doi.org/10.1007/s10462-023-10563-3
+[1585] Babaei, H., Karimpour, J., & Hadidi, A. (2015). A survey of approaches for university course timetabling problem. Computers & Industrial Engineering, 86, 43–59. https://doi.org/10.1016/j.cie.2014.11.010
+[1586] Devlin, J., Chang, M.-W., Lee, K., & Toutanova, K. (2019). BERT: Pre-training of deep bidirectional transformers for language understanding. Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, 1, 4171–4186. https://doi.org/10.18653/v1/N19-1423

@@ -1,0 +1,14 @@
+{
+    "avoid_days": [],
+    "avoid_timeslots": [
+        "Friday_2-3",
+        "Friday_3-4",
+        "Friday_4-5",
+        "Friday_5-6"
+    ],
+    "morning_preferred": true,
+    "avoid_evening": true,
+    "large_class_threshold": 200,
+    "lecturer_no_overlap": true,
+    "lecturer_preferences": {}
+}

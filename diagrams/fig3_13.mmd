@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant Administrator
+    participant StreamlitUI
+    participant NLP_Parser
+    participant Engine
+    participant Optimizers
+    participant Database
+
+    Administrator->>StreamlitUI: Upload dataset and constraints
+    StreamlitUI->>NLP_Parser: Parse constraints
+    NLP_Parser-->>StreamlitUI: Parsed constraints JSON
+
+    Administrator->>StreamlitUI: Generate Timetable
+    StreamlitUI->>Engine: Generate initial timetable
+    
+    StreamlitUI->>Optimizers: Run GA, SA, and TS
+    Optimizers-->>StreamlitUI: Return solutions
+    
+    StreamlitUI->>StreamlitUI: Select best solution
+    StreamlitUI->>Database: Save timetable
+    StreamlitUI-->>Administrator: Display schedule

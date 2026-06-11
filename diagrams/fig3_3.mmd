@@ -1,0 +1,34 @@
+erDiagram
+    TIMETABLE_ENTRY {
+        int id PK
+        string course
+        string lecturer
+        int students
+        string venue
+        string timeslot
+        int duration
+        string level
+    }
+
+    CONSTRAINT_CONFIG {
+        string lecturer_no_overlap
+        string morning_preferred
+        string avoid_evening
+        string large_classes_big_halls
+    }
+
+    DATASET_RECORD {
+        string semester
+        int level
+        string course_code
+        int course_load_hours
+        int course_unit
+        string classroom_venue
+        string course_title
+        string lecturer
+        int students
+        int venue_capacity
+    }
+
+    DATASET_RECORD ||--o{ TIMETABLE_ENTRY : "generates"
+    CONSTRAINT_CONFIG ||--o{ TIMETABLE_ENTRY : "influences"

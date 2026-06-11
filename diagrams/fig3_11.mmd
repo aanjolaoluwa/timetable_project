@@ -1,0 +1,38 @@
+graph LR
+    %% Styles and Classes
+    classDef actor fill:#F8FAFC,stroke:#475569,stroke-width:2px,color:#0F172A,font-weight:bold;
+    classDef usecase fill:#F5F3FF,stroke:#7E57C2,stroke-width:2px,color:#5B21B6,font-weight:bold;
+
+    %% Actors
+    Admin["Academic Administrator 👤"]:::actor
+    Lecturer["Lecturer 👨‍🏫"]:::actor
+    Student["Student 🎓"]:::actor
+
+    %% System Boundary
+    subgraph System["Hyper-Heuristic Timetable System"]
+        UC1(["Upload Dataset"]):::usecase
+        UC2(["Configure Constraints"]):::usecase
+        UC3(["Generate Timetable"]):::usecase
+        UC4(["View Timetable"]):::usecase
+        UC5(["Manual Override"]):::usecase
+        UC6(["Export Timetable"]):::usecase
+        UC7(["Submit Feedback"]):::usecase
+    end
+
+    %% Stylings
+    style System fill:#FAF5FF,stroke:#7E57C2,stroke-width:2px,stroke-dasharray: 5 5;
+
+    %% Associations
+    Admin --- UC1
+    Admin --- UC2
+    Admin --- UC3
+    Admin --- UC4
+    Admin --- UC5
+    Admin --- UC6
+    Admin --- UC7
+
+    Lecturer --- UC4
+    Lecturer --- UC7
+
+    Student --- UC4
+    Student --- UC7

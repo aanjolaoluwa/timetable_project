@@ -1,0 +1,13 @@
+flowchart TD
+    A["Start: Get Valid Rooms"] --> B{"Is Computer Course?\n(CSC/CIT/CIS prefix)"}
+    B -->|Yes| C["Prioritize COMPUTER_LAB\nthen other rooms"]
+    B -->|No| D["Consider all venues"]
+    C --> E{"Any room with\ncapacity >= students?"}
+    D --> E
+    E -->|Yes| F["Return matching rooms\n(shuffled)"]
+    E -->|No| G{"Any room with\ncapacity >= 70% of students?"}
+    G -->|Yes| H["Return relaxed-capacity rooms"]
+    G -->|No| I["Return ALL venues\n(fallback)"]
+    F --> J["End"]
+    H --> J
+    I --> J

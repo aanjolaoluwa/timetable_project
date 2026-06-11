@@ -1,0 +1,19 @@
+flowchart TD
+    A["Start"] --> B["Generate initial solution"]
+    B --> C["Initialize tabu list\nwith current signature"]
+    C --> D["Generate 20 neighbour\nsolutions via mutation"]
+    D --> E["FOR EACH neighbour:\nCheck if signature is in tabu list"]
+    E --> F["Select best non-tabu\ncandidate"]
+    F --> G{"Best candidate found?"}
+    G -->|Yes| H["Move to best candidate"]
+    G -->|No| I["Skip iteration\n(all candidates tabu)"]
+    H --> J["Update global best\nif improvement"]
+    I --> K["Add current signature\nto tabu list"]
+    J --> K
+    K --> L{"Tabu list > 30?"}
+    L -->|Yes| M["Remove oldest entry"]
+    L -->|No| N{"Iterations exhausted?"}
+    M --> N
+    N -->|No| D
+    N -->|Yes| O["Return best solution"]
+    O --> P["End"]

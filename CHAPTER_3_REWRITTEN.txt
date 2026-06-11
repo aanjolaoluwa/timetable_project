@@ -1,0 +1,686 @@
+CHAPTER THREE
+RESEARCH METHODOLOGY
+
+3.1 Preamble
+
+This chapter provides a comprehensive account of the methodology adopted in the design, development, and evaluation of the hyper-heuristic university timetable generation system described in this study. The system, titled "From Prompt to Timetable: Integrating Natural Language Reasoning with Different Hyper-Heuristic Algorithms," was built as a software artefact that accepts academic scheduling data and natural language constraints, and then applies three competing meta-heuristic optimisation algorithms to produce a conflict-minimised university timetable.
+
+The research adopts the Design Science Research (DSR) methodology, which is appropriate for studies that involve the design, construction, and evaluation of novel IT artefacts intended to solve clearly defined organisational problems (Dresch, Lacerda, & Antunes, 2015). Within DSR, this project is classified as a mixed design: it combines applied design (the construction of a functioning system) with evaluatory design (the systematic experimental comparison of three optimisation algorithms on real institutional data). This dual nature means that the methodology chapter serves two purposes: it documents the artefact design and implementation decisions, and it states the evaluation strategy that will be assessed in Chapter Four.
+
+The remainder of this chapter is structured as follows. Section 3.2 states the research design. Section 3.3 describes the data source and data collection process, including an honest account of the dataset's limitations. Sections 3.4 to 3.9 present the system analysis, architecture, input/output design, and database design. Sections 3.10 to 3.14 specify the constraint model, fitness function, initial solution generation, algorithm designs, and natural language processing module. Sections 3.15 to 3.17 cover the UML models, software requirements, and implementation procedures. Section 3.18 states the evaluation strategy. Section 3.19 summarises the chapter.
+
+
+3.2 Research Design
+
+The research design adopted for this study is the Design Science Research (DSR) methodology. DSR is a problem-solving paradigm that prescribes the construction and evaluation of purposeful artefacts — in this case, a software system — to address identified organisational problems (Dresch et al., 2015). The methodology is particularly suitable for this project for the following reasons:
+
+First, the university timetable scheduling problem (UTSP) is a clearly identified, well-documented organisational problem. It is classified in the theoretical computer science literature as NP-hard, meaning that no known polynomial-time algorithm can find the globally optimal solution for real-world instances (Ceschia, Di Gaspero, & Schaerf, 2023). This justifies the use of meta-heuristic methods, which produce good-quality solutions within acceptable computational time rather than guaranteeing mathematical optimality.
+
+Second, the primary output of this project is a novel software artefact — an intelligent, web-based timetable generation system that integrates natural language constraint specification with a hyper-heuristic optimisation framework. The construction of this artefact constitutes the applied design component of the research.
+
+Third, the artefact is systematically evaluated through controlled experiments. Three meta-heuristic algorithms — the Genetic Algorithm (GA), Simulated Annealing (SA), and Tabu Search (TS) — are applied to the same scheduling problem, and their performance is compared using quantitative metrics including fitness score, clash counts, and execution time. This constitutes the evaluatory design component of the research.
+
+The study therefore follows a mixed research design: applied design in the construction of the artefact, and evaluatory design in the experimental comparison of algorithms. This classification aligns with the project guidelines for mixed design projects, which combine development and evaluation.
+
+
+3.3 Population, Data Source, and Data Limitations
+
+3.3.1 Data Collection Process and Limitations
+
+The primary dataset used in this study is the Covenant University Academic Resources Dataset, which was assembled specifically for this project. The target data represented the full academic scheduling information for the 2025/2026 academic session at Covenant University, Ota, Ogun State, Nigeria, covering course codes, assigned lecturers, enrolled student counts, assigned teaching venues, and course load information across all colleges and departments.
+
+Data was collected from multiple sources, including the Directorate of Academic Planning Unit (DAPU), timetable records obtained from individual departments, and direct departmental scheduling documents. However, the data collection process encountered significant limitations. The university does not maintain a single, centralised, machine-readable scheduling database accessible to undergraduate researchers. As a result, records from different departments were supplied in inconsistent formats, some were incomplete, and others contained missing or ambiguous entries for lecturer names, venue capacities, and student enrolment figures.
+
+To address these gaps, supplementary data was added by the researcher based on institutional knowledge as a registered student of Covenant University. Where official lecturer names were unavailable, placeholder names or names drawn from publicly known departmental staff were used. Where venue capacities could not be confirmed from official records, estimates were made based on physical familiarity with the venues and standard university venue configurations. Where course entries were missing student counts, reasonable estimates were inserted based on class sizes typically observed at the department and level in question.
+
+It is therefore important to acknowledge that the dataset used in this study is a partially estimated dataset. While every effort was made to ensure that the figures are realistic and internally consistent, the generated timetable, though algorithmically optimised given the input data, may not perfectly reflect true institutional scheduling constraints in every respect. The accuracy of the output is bounded by the accuracy and completeness of the input. This limitation is discussed further in Chapter Five.
+
+3.3.2 Dataset Characteristics
+
+After collection, cleaning, and supplementation, the dataset used for this study has the following characteristics:
+
+Property                | Value
+------------------------|----------------------------------
+File Format             | CSV (Comma-Separated Values)
+Total Records           | 490+ course sessions
+Unique Departments      | 20+ academic departments
+Academic Levels         | 100, 200, 300, 400, 500
+Unique Venues           | 50+ classroom venues
+Unique Lecturers        | 100+ academic staff
+Student Count Range     | 56 to 431 per course
+Course Load Range       | 1 to 3 hours per session
+
+3.3.3 Venue Classification
+
+The venues in the dataset are classified into the following categories based on physical capacity and function:
+
+Category                  | Examples                               | Capacity Range
+--------------------------|----------------------------------------|----------------
+Mega Lecture Theatres     | LT1, LT2, LARGELH                     | 1,000 – 2,500
+Large Halls               | HALL107, HALL108, HALL201              | 240 – 500
+Medium Halls              | HALL306, HALL307, STUDIO100            | 180 – 280
+Science Laboratories      | BCH_LAB, BIO_LAB, CHEM_LAB            | 140 – 180
+Computer Laboratories     | COMPUTER_LAB                           | 250 – 300
+Engineering Lecture Halls | CHE 200LH, CVE 300LH, MCE 400LH       | 150 – 250
+Special Venues            | CBN_AUDITORIUM, CHAPEL, LIBRARY        | 500 – 1,200
+Overflow Facilities       | OVERFLOW_HALL_1, OVERFLOW_HALL_2      | 800 – 1,000
+
+3.3.4 Data Preprocessing Pipeline
+
+Before the dataset is loaded into the scheduling engine, it passes through a rigorous preprocessing pipeline implemented in the load_dataset() function within engine.py. The pipeline performs the following steps:
+
+(i) Column Name Standardisation: All column names are stripped of leading and trailing whitespace and mapped to a set of recognised standard names. For example, columns named "LECTURERS", "LECTURER'S NAME", or "LECTURER NAME" are all mapped to the standard "LECTURER" column. This ensures that datasets from different departments with varying column naming conventions can all be processed by the same engine without manual reformatting.
+
+(ii) Missing Lecturer Assignment: For course records where the lecturer field is missing, blank, or contains placeholder values such as "Unknown" or "N/A", the system assigns a placeholder Nigerian academic name drawn from a predefined pool of realistic names within the engine configuration. This prevents the scheduling engine from failing due to missing lecturer entries while maintaining a realistic institutional appearance in the output.
+
+(iii) Student Count Cleaning: Non-numeric student count values are coerced to numeric using pandas' pd.to_numeric() function with errors set to "coerce". Records with completely missing course codes are removed. Records where student count exceeds 1.5 times the venue's known capacity are flagged and removed as likely data entry errors.
+
+(iv) Venue Capacity Mapping: Each venue name in the dataset is mapped to its seating capacity. Where the dataset includes an explicit venue capacity column, those values are used directly and stored in the engine's VENUE_CAPACITY dictionary. Where no capacity data is available, the engine applies a name-heuristic function that infers approximate capacity based on the venue name pattern (for example, venues containing "HALL107" are assigned 500 seats; venues containing "LAB" are assigned 120 seats).
+
+(v) Venue Key Standardisation: Venue names are converted to uppercase, spaces are replaced with underscores, and special characters are removed to create consistent dictionary keys for the scheduling engine's room tracking logic.
+
+(vi) Dataset Summary: Upon completion of preprocessing, the engine prints a summary of the total courses loaded, unique venues, unique lecturers, and maximum student count, allowing the administrator to verify the data before initiating optimisation.
+
+[Figure 3.4: Data Preprocessing Pipeline — insert flowchart here]
+
+
+3.4 System Analysis
+
+3.4.1 Analysis of the Existing System
+
+Traditional university course timetabling at most Nigerian institutions, including Covenant University, is conducted through manual or semi-manual spreadsheet-based processes. Academic administrators from individual departments compile course lists, lecturer assignments, and room preferences into spreadsheet files, which are then manually reconciled across departments by timetabling officers. This process suffers from several well-documented limitations.
+
+High Error Rate: Manual scheduling is inherently prone to human error. Lecturer clashes (a lecturer assigned to two courses in the same timeslot), room conflicts (two courses assigned to the same room simultaneously), and capacity violations (student enrolment exceeding room capacity) are common outcomes of manual processes and typically require multiple iterations of correction (Jaradat, Ayob, Ahmad, Naser, & Jadaan, 2019).
+
+Time Intensity: The manual process typically requires several weeks of iterative adjustment before a viable timetable is produced. This preparation time competes with other administrative responsibilities and introduces scheduling delays at the start of each semester.
+
+Scalability Failure: As the number of courses, lecturers, venues, and enrolled students grows, the combinatorial complexity of the scheduling problem increases exponentially. Manual approaches cannot effectively explore the large solution space and often settle for the first feasible solution found rather than an optimised one (Ceschia et al., 2023).
+
+No Optimisation: The existing system produces timetables that are feasible at best. There is no mechanism for optimising quality metrics such as minimising the number of late-evening sessions, distributing classes evenly across the week, or respecting individual lecturer scheduling preferences.
+
+No Natural Language Interface: Institutional scheduling policies and lecturer preferences must be translated by the timetabling officer into rigid spreadsheet formats. There is no facility for expressing constraints in ordinary English, which creates a communication barrier between non-technical administrators and the scheduling process.
+
+3.4.2 Analysis of the Proposed System
+
+The proposed system addresses each of the above limitations through an intelligent, automated scheduling platform with the following capabilities:
+
+Natural Language Constraint Specification: Administrators input scheduling constraints as plain English sentences (for example, "No lecturer should teach two classes at the same time" or "Morning classes are preferred"). The system's NLP module, implemented in nlp_parser.py, parses these sentences using regular expression pattern matching and converts them into structured JSON constraint objects that the scheduling engine can apply directly.
+
+Multi-Algorithm Hyper-Heuristic Optimisation: Three optimisation algorithms — the Genetic Algorithm, Simulated Annealing, and Tabu Search — are executed in sequence on the same scheduling problem. The algorithm producing the lowest fitness score (fewest weighted constraint violations) is automatically selected as the final timetable. This hyper-heuristic approach ensures that the best-available solution is always delivered, regardless of which algorithm happens to perform best for a particular problem instance (Burke et al., 2013).
+
+Automated Clash Detection: The fitness function, implemented in the evaluate_timetable() function of engine.py, systematically detects and penalises lecturer clashes, room double-bookings, capacity violations, unscheduled sessions, and NLP constraint violations using a weighted penalty model.
+
+Web-Based Interface: A Streamlit-powered frontend provides role-based access for three user types — academic administrators, lecturers, and students — with real-time timetable visualisation, a multi-step generation workflow, and CSV export functionality.
+
+RESTful API Backend: A FastAPI backend server provides programmatic access to the scheduling engine, supporting dataset upload, constraint parsing, timetable generation, and retrieval via well-defined API endpoints with automatic documentation.
+
+
+3.5 Proposed System Description
+
+3.5.1 System Overview
+
+The proposed system, named "Time4Tables," is a multi-layered intelligent timetable scheduling platform. The system accepts academic resource datasets in CSV format, parses natural language constraints submitted by administrators, generates an initial feasible timetable using a greedy constructive heuristic, and then applies three competing meta-heuristic optimisation algorithms to produce an optimised, clash-minimised schedule. The algorithm producing the best result is selected automatically by the hyper-heuristic selection mechanism.
+
+The system operates through a four-step administrator workflow:
+
+Step 1 — Dataset Upload: The administrator uploads a CSV file containing course codes, lecturer names, student enrolment counts, venue assignments, and course load information for the semester.
+
+Step 2 — Hard Constraint Definition: The administrator enters mandatory institutional scheduling rules as plain English text (for example, "No overlapping classes for lecturers" or "Large classes above 200 students must use big halls").
+
+Step 3 — Soft Constraint Definition: The administrator enters preferred but non-mandatory scheduling preferences as plain English text (for example, "Morning classes are preferred" or "Avoid scheduling on Saturdays").
+
+Step 4 — Multi-Algorithm Optimisation: The system parses the constraints, generates an initial timetable, runs all three algorithms, compares their fitness scores, and presents the best-performing timetable alongside a comparative benchmark table.
+
+3.5.2 Key System Features
+
+Feature                    | Description
+---------------------------|-----------------------------------------------------
+NLP Constraint Parsing     | Translates plain English constraints into structured JSON using regex pattern matching
+Genetic Algorithm          | Population-based evolutionary search with tournament selection, single-point crossover, elitism, and mutation
+Simulated Annealing        | Temperature-based probabilistic neighbourhood search with geometric cooling schedule
+Tabu Search                | Memory-based neighbourhood search with a tabu list to prevent cycling
+Fitness Evaluation         | Multi-objective weighted penalty function detecting six violation categories
+Hyper-Heuristic Selection  | Automatic selection of best-performing algorithm by minimum fitness score
+Role-Based Access          | Separate access portals for administrators, lecturers, and students
+Real-Time Visualisation    | Interactive weekly grid explorer with day-by-day tabbed timetable views
+Manual Override            | Administrator ability to adjust individual course assignments post-optimisation
+CSV Export                 | Download functionality for the optimised timetable in CSV format
+RESTful API                | FastAPI backend with endpoints for upload, constraint parsing, and generation
+
+
+3.6 System Architecture
+
+The system follows a three-tier client-server architecture comprising a Presentation Layer, a Business Logic Layer, and a Data Layer.
+
+The Presentation Layer is implemented using Streamlit (app_ui.py), a Python-based rapid web application framework. Streamlit was chosen over traditional JavaScript frontend frameworks because it allows Python data science code and interactive UI elements to be combined in a single codebase, eliminating the need for a separate frontend language. The interface provides role-based login, multi-step workflow navigation, interactive data tables, and real-time progress indicators during algorithm execution.
+
+The Business Logic Layer is implemented using FastAPI (app.py), a modern Python web framework that provides automatic OpenAPI documentation, type validation, and asynchronous request handling. The FastAPI backend exposes RESTful endpoints for dataset upload, constraint parsing, timetable generation, and timetable retrieval. The scheduling engine (engine.py), the three algorithm modules (genetic_algorithm.py, simulated_annealing.py, tabu_search.py), and the NLP parser (nlp_parser.py) all reside in this layer.
+
+The Data Layer uses SQLite as the embedded relational database, accessed through the SQLAlchemy Object-Relational Mapping (ORM) library. SQLite was selected for its zero-configuration requirement, suitability for single-user deployment, and seamless integration with Python's data science ecosystem. The generated timetable is persisted to timetables.db and is simultaneously exported as a CSV file (final_timetable.csv) for portability.
+
+[Figure 3.1: High-Level System Architecture Diagram — insert here]
+[Figure 3.2: Component Architecture Diagram — insert here]
+
+
+3.7 Input Design
+
+The system accepts two primary categories of input from the administrator.
+
+3.7.1 Academic Resource Dataset (CSV)
+
+The first input is a Comma-Separated Values (CSV) file containing the academic scheduling data for the semester. The following columns are expected:
+
+Column Name              | Data Type | Description                          | Example
+-------------------------|-----------|--------------------------------------|---------------------
+SEMESTER                 | String    | Academic semester identifier         | "Alpha"
+LEVEL                    | Integer   | Student academic level               | 100, 200, 300
+COURSE CODE              | String    | Unique course identifier             | "CSC335", "BCH357"
+COURSE LOAD(HOURS)       | Integer   | Weekly contact hours                 | 1, 2, 3
+COURSE UNIT              | Integer   | Credit units                         | 2, 3
+CLASSROOM (VENUE)        | String    | Preferred or assigned venue          | "COMPUTER_LAB"
+COURSE TITLE             | String    | Full course name                     | "Data Structures"
+LECTURER                 | String    | Assigned lecturer name               | "Dr. Dada"
+STUDENTS                 | Integer   | Number of enrolled students          | 176
+VENUE_CAPACITY           | Integer   | Maximum seating capacity of venue    | 250
+
+The load_dataset() function in engine.py applies flexible column name recognition, so datasets from different departments with minor column heading variations (for example, "LECTURERS" instead of "LECTURER") are all accepted without manual reformatting.
+
+3.7.2 Natural Language Constraints
+
+The second input category is plain English text entered by the administrator through the user interface's Hard Constraint and Soft Constraint text areas. The NLP parser supports the following constraint patterns, implemented as named regular expression groups in nlp_parser.py:
+
+Hard Constraints (examples):
+- "No lecturer should teach two classes at the same time"
+- "No overlapping classes for lecturers"
+- "Large classes above 200 students must use big halls"
+
+Soft Constraints (examples):
+- "Morning classes are preferred"
+- "Avoid evening classes"
+- "No classes on Friday"
+- "Avoid scheduling on Saturday"
+- "Dr. Rotimi cannot teach on Monday"
+- "No late Friday classes"
+
+The parser merges hard and soft constraint inputs through the merge_constraints() function, which combines both parsed outputs into a single unified constraint dictionary. Hard constraint avoid_days and avoid_timeslots entries take precedence over soft constraint entries for the same keys.
+
+
+3.8 Output Design
+
+The system produces the following outputs after optimisation:
+
+3.8.1 Optimised Timetable (CSV)
+
+The primary output is a CSV file (final_timetable.csv) containing the optimised schedule. Each row represents one scheduled course session with the following columns: course code, lecturer name, student count, assigned venue, venue capacity, assigned timeslot (in the format Day_Hour, for example Monday_8-9), course duration, and student level.
+
+3.8.2 Fitness Evaluation Report
+
+A Python dictionary object containing: total weighted fitness score, number of lecturer clashes, number of room clashes, number of capacity violations, number of practical violations, number of unscheduled sessions, and number of NLP constraint violations. This report is displayed in the administrator's benchmark panel and is used to determine algorithm selection.
+
+3.8.3 Algorithm Comparison Benchmark
+
+A comparative table displayed in the user interface showing each algorithm's fitness score, execution time, estimated constraint satisfaction rate, and selection status (Best or Suboptimal).
+
+3.8.4 Interactive Visual Timetable
+
+A Streamlit-based weekly grid explorer displaying the optimised timetable in a day-by-day tabbed view (Monday through Saturday), with course code, lecturer, timeslot, venue, student count, and capacity information shown in a sortable, filterable table for each day.
+
+
+3.9 Database Design
+
+3.9.1 Database Technology
+
+The system uses SQLite as the embedded relational database, accessed through the SQLAlchemy ORM library. SQLite was chosen for its lightweight nature, zero-configuration requirement, portability as a single file (timetables.db), and suitability for local desktop and web application deployment without requiring a database server. SQLAlchemy provides an object-oriented query interface, abstracting raw SQL operations and ensuring portability to other database backends in future extensions.
+
+3.9.2 Database Schema
+
+The database contains a single table, timetable_entries, with the following schema:
+
+Column       | Data Type  | Constraints            | Description
+-------------|------------|------------------------|--------------------------------
+id           | INTEGER    | PRIMARY KEY, AUTO INC  | Unique record identifier
+course       | VARCHAR    | INDEXED                | Course code
+lecturer     | VARCHAR    | —                      | Lecturer name
+students     | INTEGER    | —                      | Enrolled student count
+venue        | VARCHAR    | —                      | Assigned classroom venue
+timeslot     | VARCHAR    | —                      | Assigned day and hour
+duration     | INTEGER    | —                      | Duration in hours
+level        | VARCHAR    | —                      | Student academic level
+
+[Figure 3.3: Entity-Relationship Diagram — insert here]
+
+
+3.10 Constraint Definition
+
+The system models scheduling requirements as three categories of constraints, each enforced differently by the fitness function.
+
+3.10.1 Hard Constraints
+
+Hard constraints are inviolable conditions that must be satisfied for a timetable to be considered feasible. Their violation is penalised with high weight values in the fitness function, ensuring that the optimisation algorithms strongly prioritise their elimination:
+
+ID  | Constraint             | Description                                                        | Penalty Weight
+----|------------------------|--------------------------------------------------------------------|--------------
+HC1 | Lecturer Non-Overlap   | A lecturer cannot be assigned to two or more courses in the same timeslot | 100,000 per violation
+HC2 | Room Non-Overlap       | A classroom cannot host two or more courses in the same timeslot   | 100,000 per violation
+HC3 | Capacity Compliance    | The number of enrolled students must not exceed the room's seating capacity | 50,000 per violation
+HC4 | Session Scheduling     | Every course must be assigned a valid timeslot and venue           | 500,000 per unscheduled session
+
+3.10.2 Soft Constraints
+
+Soft constraints represent preferences that should be satisfied when possible but do not invalidate the timetable if violated. They are derived from the NLP-parsed administrator input and are penalised with a lower weight to guide — rather than force — the search:
+
+ID  | Constraint              | Description                                                          | Penalty Weight
+----|-------------------------|----------------------------------------------------------------------|-----------------
+SC1 | Day Avoidance           | Certain days should be avoided for scheduling (e.g. "No classes on Friday") | 5,000 per violation
+SC2 | Timeslot Avoidance      | Specific timeslots should be excluded (e.g. late Friday afternoon)   | 5,000 per violation
+SC3 | Morning Preference      | Classes should preferably be scheduled in morning timeslots (8am–1pm) | 5,000 per evening violation
+SC4 | Evening Avoidance       | Late timeslots (4–5, 5–6) should be avoided                         | 5,000 per violation
+SC5 | Lecturer Day Preference | Specific lecturers should not be scheduled on specific days          | 5,000 per violation
+SC6 | Large Hall Requirement  | Courses above a specified student threshold must be in large halls   | 10,000 per violation
+
+3.10.3 Special Constraints
+
+The following domain-specific constraints are hard-coded into the engine based on institutional knowledge of Covenant University's scheduling practices:
+
+ID  | Constraint                  | Description
+----|-----------------------------|---------------------------------------------------
+SP1 | Computer Course Preference  | Courses with prefixes CSC, CIT, or CIS are preferentially assigned to COMPUTER_LAB
+SP2 | Level 500 Restriction       | 500-level courses are not scheduled in late timeslots (4–5 or 5–6)
+SP3 | GST/EDS Course Routing      | Courses with prefixes GST or EDS are preferentially routed to large lecture theatres (LT1, LT2)
+SP4 | Chapel Routing              | Courses with prefixes TMC or DEO are assigned to the CHAPEL venue
+
+
+3.11 Fitness Function Design
+
+3.11.1 Mathematical Formulation
+
+The fitness function evaluates the quality of a timetable solution by computing a weighted sum of all constraint violations. A lower fitness value indicates a better, more feasible solution. The fitness function is defined as:
+
+F(T) = w1 × V_LC + w2 × V_RC + w3 × V_CV + w4 × V_PV + w5 × V_US + w6 × V_NLP
+
+Where:
+Symbol  | Description                             | Weight (wi)
+--------|-----------------------------------------|-------------
+V_LC    | Number of lecturer clash instances      | w1 = 100,000
+V_RC    | Number of room clash instances          | w2 = 100,000
+V_CV    | Number of capacity violations           | w3 = 50,000
+V_PV    | Number of practical session violations  | w4 = 10,000
+V_US    | Number of unscheduled sessions          | w5 = 500,000
+V_NLP   | Number of NLP soft constraint violations | w6 = 5,000
+
+3.11.2 Violation Detection Logic
+
+(1) Lecturer Clash Detection (V_LC):
+The engine maintains a dictionary tracking the number of courses each lecturer is assigned per timeslot. For each lecturer-timeslot combination with a count greater than one, the excess (count − 1) is added to the lecturer clash penalty. Formally: V_LC = Σ Σ max(0, count − 1). If a lecturer is teaching one class at a given time, there is no penalty. If they are double-booked with two classes simultaneously, a penalty of one clash is counted.
+
+(2) Room Clash Detection (V_RC):
+The same logic is applied for rooms. For each room-timeslot combination with more than one course assigned, the excess is counted as a room clash. V_RC = Σ Σ max(0, count − 1).
+
+(3) Capacity Violation Detection (V_CV):
+For each scheduled session, if the number of enrolled students Si exceeds the room capacity Ci, one capacity violation is counted: V_CV = Σ [1 if Si > Ci, else 0].
+
+(4) NLP Soft Constraint Violation Detection (V_NLP):
+For each session, the engine checks against the parsed constraint dictionary: whether the assigned day is in the avoid_days list, whether the assigned timeslot is in the avoid_timeslots list, whether morning_preferred is active and the session is in an evening slot, and whether any named lecturer is scheduled on their declared avoid_day. Each such violation adds one (or two, for large hall violations) to V_NLP.
+
+(5) Unscheduled Sessions (V_US):
+Sessions that could not be assigned any valid timeslot and room after two scheduling passes are flagged as UNSCHEDULED, and each unscheduled session incurs the highest penalty weight of 500,000.
+
+3.11.3 Weight Justification
+
+The penalty weights are hierarchically assigned based on the severity of each violation:
+
+- Unscheduled Sessions (w5 = 500,000): The highest penalty because an unscheduled course represents a complete failure to fulfil a mandatory academic obligation. A timetable with unscheduled sessions is fundamentally broken.
+- Lecturer and Room Clashes (w1 = w2 = 100,000): Equal high penalties because both types of clash render the timetable physically impossible — a lecturer cannot be in two rooms simultaneously, and a room cannot host two classes at once.
+- Capacity Violations (w3 = 50,000): A serious but less catastrophic violation. Overcrowding is undesirable and may violate safety regulations, but the class can still take place.
+- Practical Violations (w4 = 10,000): A moderate penalty for laboratory session scheduling conflicts.
+- NLP Soft Constraint Violations (w6 = 5,000): The lowest penalty category, reflecting the preferential (rather than mandatory) nature of soft constraints. The algorithms should minimise these but may trade them off against harder constraint satisfaction.
+
+
+3.12 Initial Timetable Generation
+
+3.12.1 Algorithm Description
+
+Before meta-heuristic optimisation can begin, a valid initial timetable must be constructed. The generate_initial_solution() function in engine.py implements a greedy constructive heuristic that processes courses in descending order of student enrolment (largest classes first). This priority ordering ensures that courses with the highest room capacity requirements are assigned first, before smaller classes have consumed all large-hall slots, thereby reducing the likelihood of subsequent capacity violations.
+
+The function builds a slot ordering list that respects any parsed soft constraints (for example, morning slots are placed at the front of the list if morning_preferred is active; avoided days are placed at the end as fallback only). For each course, the engine iterates through valid rooms (filtered by capacity and course type) and available timeslots until a clash-free assignment is found. If no assignment is possible after the primary pass, a relaxed recovery pass is attempted with all timeslots and all venues available.
+
+3.12.2 Room Selection Strategy
+
+The get_valid_rooms() function implements a structured room selection strategy:
+
+Step 1 — Domain-Specific Routing: Courses with specific code prefixes are hard-routed to their institutional venues (CSC/CIT/CIS to COMPUTER_LAB; GST/EDS to LT1/LT2; TMC/DEO to CHAPEL).
+
+Step 2 — Computer Course Preference: For all other computer-related courses, rooms containing "COMPUTER" in their name are placed at the top of the candidate list.
+
+Step 3 — Capacity Filtering: Rooms with capacity below the required student count are excluded.
+
+Step 4 — Large Class Threshold: If a large_class_threshold is specified by the administrator (for example, 200), courses above that threshold are only considered for rooms that also meet or exceed the threshold.
+
+Step 5 — Relaxed Capacity Fallback: If no room meets the full capacity requirement, rooms with at least 70% of the required capacity are included.
+
+Step 6 — Full Fallback: If no room is found after Step 5, all available venues are made candidates.
+
+[Figure 3.5: Room Selection Flowchart — insert here]
+
+
+3.13 Algorithm Design
+
+3.13.1 Overview of the Hyper-Heuristic Approach
+
+The system employs a selection hyper-heuristic framework, which operates at a higher level of abstraction than individual meta-heuristics. Rather than committing to a single optimisation algorithm, the system runs all three algorithms — Genetic Algorithm, Simulated Annealing, and Tabu Search — on the same scheduling problem with the same initial data and parsed constraints. After all three runs complete, the system evaluates each algorithm's final solution using the shared fitness function and selects the one with the lowest (best) fitness score as the final output. This approach is justified by Burke et al. (2013), who demonstrated that hyper-heuristic portfolio methods outperform single-algorithm approaches on combinatorial optimisation problems, because the relative performance of algorithms varies across problem instances.
+
+3.13.2 Problem Representation
+
+Each timetable solution is represented as a Python list of dictionaries, where each dictionary encodes one scheduled course session. This unified representation is shared across all three algorithms and the fitness function, enabling direct comparison. A session dictionary contains the following fields: course code, lecturer name, student count, venue name, venue capacity, timeslot (in the format Day_Hour), duration in hours, and student academic level.
+
+The search space is defined by the Cartesian product of available timeslots and venues. With 6 days × 10 hours per day = 60 timeslots and approximately 30+ active venues, each course can theoretically be assigned to any of 60 × 30 = 1,800 (day, hour, venue) combinations. With 490+ courses to schedule, the total search space is astronomically large, making exhaustive search computationally infeasible and justifying the use of meta-heuristic approaches.
+
+3.13.3 Genetic Algorithm Methodology
+
+Overview:
+The Genetic Algorithm (GA) is a population-based evolutionary optimisation algorithm inspired by Darwinian principles of natural selection and genetic inheritance (Katoch, Chauhan, & Kumar, 2021). In the timetabling context, each individual in the population represents a complete timetable solution, and the algorithm evolves the population toward better solutions through selection, crossover, and mutation operators.
+
+Configuration Parameters:
+Parameter            | Value     | Description
+---------------------|-----------|--------------------------------------------
+Population Size      | 50        | Number of timetable solutions maintained per generation
+Generations          | 200       | Maximum number of evolutionary cycles
+Mutation Rate        | 0.2 (20%) | Probability of mutating each session
+Tournament Size      | 5         | Number of individuals in each tournament selection
+Elitism Count        | 5         | Number of top solutions preserved each generation
+Crossover Method     | Single-Point | Chromosome split at a random index position
+Selection Method     | Tournament Selection | Competitive selection among random subsets
+
+Tournament Selection:
+Tournament selection randomly samples a subset of five individuals from the population and selects the one with the lowest fitness score as a parent. This method provides effective selection pressure while maintaining population diversity, preventing premature convergence to a local optimum.
+
+Single-Point Crossover:
+Two parent timetables are combined by selecting a random split point. The child timetable inherits all sessions before the split point from Parent 1 and all sessions from the split point onward from Parent 2. This operator recombines beneficial timeslot/venue assignments from two different parents, potentially producing offspring that are better than either parent.
+
+Elitism:
+The top five individuals in the current generation (by fitness score) are copied directly to the next generation without modification. This guarantees that the best solution found is never lost through crossover or mutation.
+
+Mutation:
+Each session in a timetable has a 20% probability of being randomly reassigned to a new timeslot and venue. The mutation operator uses the same constraint-aware slot ordering and room selection logic as the initial solution generator, ensuring that mutated sessions respect declared soft constraints.
+
+[Figure 3.6: Genetic Algorithm Flowchart — insert here]
+
+3.13.4 Simulated Annealing Methodology
+
+Overview:
+Simulated Annealing (SA) is a probabilistic meta-heuristic inspired by the physical annealing process in metallurgy, where materials are heated and cooled slowly to reduce internal defects (Delahaye, Chaimatanan, & Mongeau, 2019). In the timetabling context, the algorithm explores the solution space by iteratively generating neighbouring solutions through mutation and accepting or rejecting them based on the Metropolis acceptance criterion.
+
+Configuration Parameters:
+Parameter            | Value    | Description
+---------------------|----------|------------------------------------------
+Initial Temperature  | 10,000   | Starting temperature controlling exploration
+Cooling Rate (α)     | 0.995    | Geometric cooling schedule multiplier
+Iterations           | 500      | Number of search iterations
+Minimum Temperature  | 0.001    | Floor value preventing division by zero
+Mutation Rate        | 0.1 (10%)| Probability of mutating each session per iteration
+
+Metropolis Acceptance Criterion:
+The algorithm accepts or rejects each neighbour solution according to the following rule:
+- If the neighbour has a lower fitness (improvement), it is always accepted.
+- If the neighbour is worse (ΔE ≥ 0), it is accepted with probability e^(−ΔE / T), where T is the current temperature.
+
+At high temperatures, this criterion accepts deteriorating moves with high probability, enabling broad exploration of the search space and escape from local optima. As the temperature decreases with each iteration, the acceptance probability for worse solutions approaches zero, causing the algorithm to converge toward exploitation of the best solution found.
+
+Cooling Schedule:
+The system uses a geometric cooling schedule: T(k+1) = α × T(k), where α = 0.995. Starting from T0 = 10,000, the temperature reaches approximately 82 after 500 iterations, providing a gradual transition from exploration to exploitation.
+
+[Figure 3.7: Simulated Annealing Flowchart — insert here]
+
+3.13.5 Tabu Search Methodology
+
+Overview:
+Tabu Search (TS) is a meta-heuristic that uses an adaptive memory structure — the tabu list — to guide the search away from recently visited solutions, preventing cycling and encouraging exploration of new regions of the search space (Sörensen, Sevaux, & Glover, 2018). In each iteration, TS generates multiple neighbourhood solutions, evaluates each non-tabu candidate, and moves to the best one.
+
+Configuration Parameters:
+Parameter            | Value     | Description
+---------------------|-----------|---------------------------------------------
+Maximum Iterations   | 300       | Number of search cycles
+Tabu List Size       | 30        | Maximum number of signatures stored in tabu memory
+Neighbours per Iteration | 20   | Number of candidate neighbour solutions generated each cycle
+Mutation Rate        | 0.3 (30%) | Higher rate to generate greater neighbourhood diversity
+
+Tabu List Structure:
+The tabu list stores solution signatures — compact, hashable representations of each visited timetable. Each signature is a Python tuple of (course, timeslot) pairs for all sessions in the timetable. When evaluating neighbours, any neighbour whose signature is already in the tabu list is skipped, unless no non-tabu candidate is available (aspiration criterion).
+
+Aspiration Criterion:
+If all generated neighbours in a given iteration are tabu, the algorithm applies the aspiration criterion: the best among all tabu candidates is accepted regardless of tabu status. This prevents the search from stagnating when the tabu list has inadvertently blocked all improvement paths.
+
+[Figure 3.8: Tabu Search Flowchart — insert here]
+
+3.13.6 Mutation Operator Design
+
+The mutation operator is a shared component used by all three algorithms. It generates neighbouring solutions by modifying approximately 20–30% of sessions (depending on the algorithm's configured mutation rate). The operator implements a two-phase approach:
+
+Phase 1 — Random Reassignment: Each session is independently selected for mutation with the configured probability. Selected sessions are freed from their current timeslot and room, and then reassigned using the constraint-aware slot ordering and room selection logic.
+
+Phase 2 — Recovery Scheduling: Any sessions that become unscheduled during Phase 1 (because no valid slot was found during reassignment) undergo a recovery pass, where the algorithm relaxes all constraints and attempts to assign the session to any available timeslot-room combination to prevent the unscheduled penalty.
+
+[Figure 3.10: Mutation Operator Flowchart — insert here]
+
+3.13.7 Hyper-Heuristic Selection Strategy
+
+After all three algorithms have completed their optimisation runs, the system compares the final fitness scores and selects the algorithm with the lowest value as the winner. Its timetable solution is presented to the administrator as the final output, and the benchmark comparison table displays all three algorithms' performance metrics side by side for transparency.
+
+
+3.14 NLP Constraint Parsing Module
+
+3.14.1 Architecture
+
+The NLP module, implemented in nlp_parser.py, operates as a rule-based natural language understanding system that translates English-language constraint specifications into structured Python dictionaries. The module uses Python's built-in re (regular expressions) library exclusively. No external machine learning libraries, transformer models, or pre-trained language models are employed. This design choice was deliberate: Nguyen, Tran, and Nguyen (2022) demonstrated that rule-based NLP employing deterministic regex pattern matching provides 100% accuracy within a predefined constraint vocabulary, without the computational overhead or probabilistic errors associated with deep learning models. For the constrained vocabulary of university scheduling policies, rule-based parsing is both accurate and transparent.
+
+3.14.2 Parsing Pipeline
+
+The parse_constraints() function processes input text through the following stages:
+
+(1) Text Normalisation: The input string is stripped of leading and trailing whitespace and converted to lowercase to ensure case-insensitive matching.
+
+(2) Day Avoidance Extraction: The _extract_avoid_days() function scans the text for patterns indicating that specific days should be avoided (for example, "no classes on Friday", "avoid Saturday", "not on Monday"). It also handles the "weekend" keyword, mapping it to both Saturday and Sunday.
+
+(3) Timeslot Avoidance Extraction: The _extract_avoid_timeslots() function identifies patterns for time-of-day avoidance, including "no classes after 4pm" (which maps to all 4–5 and 5–6 timeslots across all days), "late Friday" patterns (which map to Friday afternoon and evening slots), and "after 5pm" patterns.
+
+(4) Morning Preference Extraction: The _extract_morning_preference() function detects patterns indicating preference for morning sessions (8am–1pm), such as "morning classes are preferred", "prefer the morning", or "early classes".
+
+(5) Evening Avoidance Extraction: The _extract_avoid_evening() function detects softer evening avoidance patterns.
+
+(6) Large Class Threshold Extraction: The _extract_large_class_threshold() function identifies numeric thresholds for large class definitions (for example, "classes above 200 students must use big halls" extracts the threshold 200). If no number is specified but a large class–large hall relationship is mentioned, the threshold defaults to 150.
+
+(7) Lecturer Preference Extraction: The _extract_lecturer_preferences() function extracts individual lecturer scheduling preferences by detecting patterns such as "Dr. Adebayo should not teach on Mondays" or "Prof. Bello prefers Tuesdays".
+
+(8) Constraint Object Assembly: The extracted values are assembled into a Python dictionary with keys: avoid_days, avoid_timeslots, morning_preferred, avoid_evening, large_class_threshold, lecturer_no_overlap (always True), and lecturer_preferences.
+
+3.14.3 Hard and Soft Constraint Merging
+
+The merge_constraints() function is called by the API backend to combine the parsed outputs of the hard constraint text area and the soft constraint text area into a single unified constraint dictionary. Hard constraint avoid_days and avoid_timeslots entries take precedence. Boolean preferences (morning_preferred, avoid_evening) are combined with logical OR. Lecturer preferences from both inputs are merged into a single dictionary.
+
+[Figure 3.9: NLP Parsing Pipeline — insert here]
+
+3.14.4 Supported Constraint Patterns
+
+The following table summarises the constraint categories and representative English patterns supported by the parser:
+
+Category                  | Example Input Text
+--------------------------|----------------------------------------------------------
+Day Avoidance             | "No classes on Friday", "Avoid Saturday", "Not on Monday"
+Evening Avoidance         | "Avoid evening classes", "No late slots", "After 4pm avoid"
+Morning Preference        | "Morning classes preferred", "Early sessions only"
+Large Class Routing       | "Large classes above 200 must use big halls"
+Specific Timeslot Avoid   | "Late Friday afternoon", "No classes after 5pm"
+Lecturer Day Restriction  | "Dr. Rotimi cannot teach on Monday"
+Lecturer Day Preference   | "Prof. Bello prefers Tuesdays"
+Weekend Avoidance         | "No weekend classes"
+
+
+3.15 UML Diagrams
+
+The following UML models were developed to document the system's behaviour and structural design.
+
+3.15.1 Use Case Diagram
+
+The use case diagram (Figure 3.11) identifies three actor types interacting with the system: the Academic Administrator (who uploads data, enters constraints, triggers optimisation, and views/exports the timetable), the Lecturer (who views personalised schedule), and the Student (who views level and department-filtered timetable).
+
+[Figure 3.11: Use Case Diagram — insert here]
+
+3.15.2 Activity Diagram — Timetable Generation Process
+
+The activity diagram (Figure 3.12) models the full workflow from administrator login through dataset upload, constraint entry, initial solution generation, multi-algorithm optimisation, and timetable display.
+
+[Figure 3.12: Activity Diagram — insert here]
+
+3.15.3 Sequence Diagram — Optimisation Flow
+
+The sequence diagram (Figure 3.13) documents the message flow between the Streamlit UI, the FastAPI backend, the scheduling engine, and the three algorithm modules during the optimisation process.
+
+[Figure 3.13: Sequence Diagram — insert here]
+
+3.15.4 Class Diagram
+
+The class diagram (Figure 3.14) shows the relationships between the Engine module, the three Algorithm modules, the NLP Parser, and the Database model.
+
+[Figure 3.14: Class Diagram — insert here]
+
+
+3.16 Software and Hardware Requirements
+
+3.16.1 Software Requirements
+
+Requirement              | Specification
+-------------------------|-------------------------------
+Programming Language     | Python 3.10+
+Web Framework (Frontend) | Streamlit
+Web Framework (Backend)  | FastAPI
+Database                 | SQLite 3.x
+ORM                      | SQLAlchemy
+Data Processing          | pandas 2.x, NumPy 2.x
+Scientific Computing     | SciPy 1.x
+Visualisation            | Matplotlib 3.x
+NLP Processing           | Python re (Regular Expressions), JSON
+HTTP Client              | Requests
+Operating System         | Windows 10/11, Linux, macOS
+Web Browser              | Google Chrome, Mozilla Firefox, Edge
+
+3.16.2 Hardware Requirements
+
+Requirement | Minimum Specification       | Recommended Specification
+------------|-----------------------------|--------------------------
+Processor   | Intel Core i5 / AMD Ryzen 5 | Intel Core i7 / AMD Ryzen 7
+RAM         | 4 GB                        | 8 GB
+Storage     | 500 MB free disk space      | 1 GB free disk space
+Display     | 1366 × 768 resolution       | 1920 × 1080 resolution
+Network     | Not required (local deploy) | Broadband for API access
+
+
+3.17 Implementation Procedures
+
+3.17.1 Development Methodology
+
+The system was developed using an Agile Incremental approach, dividing the development into seven sequential phases:
+
+Phase 1 — Data Acquisition and Preprocessing: Collection of the Covenant University academic dataset from multiple departmental sources, supplementation with estimated data where official records were incomplete, and implementation of the cleaning and standardisation pipeline.
+
+Phase 2 — Core Engine Development: Implementation of the scheduling engine (engine.py), including the initial greedy solution generator, the fitness evaluation function, and the shared mutation operator.
+
+Phase 3 — Algorithm Implementation: Development of the three meta-heuristic algorithm modules (genetic_algorithm.py, simulated_annealing.py, tabu_search.py) as independently callable, modular components sharing the engine's generate_timetable(), evaluate_timetable(), and mutate_timetable() functions.
+
+Phase 4 — NLP Module Development: Implementation of the natural language constraint parser (nlp_parser.py) with all regex patterns, merging logic, and constraint summarisation functions.
+
+Phase 5 — API Development: Creation of the FastAPI backend (app.py) with RESTful endpoints for dataset upload, constraint parsing, timetable generation, and retrieval.
+
+Phase 6 — UI Development: Development of the Streamlit-based web interface (app_ui.py) with role-based access control, a four-step generation workflow, an interactive weekly timetable grid, an algorithm benchmark panel, and manual override capability.
+
+Phase 7 — Integration and Testing: Full system integration, functional unit testing of all modules, integration testing of the end-to-end workflow, and performance evaluation of all three algorithms.
+
+3.17.2 Technology Stack Summary
+
+[Figure 3.15: Technology Stack Overview — insert here]
+
+3.17.3 Directory Structure
+
+timetable_project/
+│
+├── algorithms/
+│   ├── genetic_algorithm.py
+│   ├── simulated_annealing.py
+│   └── tabu_search.py
+│
+├── data/
+│   ├── cleaned_dataset.csv
+│   └── final_dataset.csv
+│
+├── evaluation/
+│   └── experiment_runner.py
+│
+├── nlp/
+│   └── constraint_extractor.py
+│
+├── parser/
+│   ├── dataset_parser.py
+│   └── nlp_parser.py
+│
+├── diagrams/
+│   └── [UML and flowchart Mermaid files]
+│
+├── academic_data.py
+├── app.py                  (FastAPI backend)
+├── app_ui.py               (Streamlit frontend)
+├── clean_dataset.py
+├── constraints.json
+├── database.py
+├── engine.py               (core scheduling engine)
+├── lecturer.py
+├── main.py                 (CLI orchestrator)
+├── nlp_constraints.py
+├── nlp_parser.py
+├── requirements.txt
+├── room_capacities.py
+├── timeslots.py
+├── timetables.db
+└── venue_cleaner.py
+
+
+3.18 Evaluation Strategy
+
+3.18.1 Evaluation Metrics
+
+The following quantitative metrics are used to evaluate and compare the performance of the three optimisation algorithms. These metrics are computed directly by the evaluate_timetable() function and reported in the comparative benchmark table:
+
+(1) Fitness Score: The total weighted penalty value computed by the fitness function. Lower is better. A fitness score of zero would represent a perfect timetable with no constraint violations of any kind.
+
+(2) Lecturer Clashes: The total number of instances in which a lecturer is assigned to two or more courses in the same timeslot.
+
+(3) Room Clashes: The total number of instances in which a room is assigned to two or more courses in the same timeslot.
+
+(4) Capacity Violations: The total number of sessions in which enrolled student count exceeds the assigned room's seating capacity.
+
+(5) Unscheduled Sessions: The total number of courses that could not be assigned any valid timeslot and room combination.
+
+(6) NLP Violations: The total number of sessions that violate one or more soft constraints specified by the administrator through natural language input.
+
+(7) Execution Time: Wall-clock time in seconds for each algorithm to complete its full run, measured from initial solution generation to final evaluation.
+
+3.18.2 Experimental Design
+
+All three algorithms are applied to the same cleaned Covenant University academic dataset and the same parsed constraint object in sequence, ensuring fair, head-to-head comparison. For each algorithm, the following parameters are used as configured in the respective module files:
+
+Parameter            | GA       | SA      | TS
+---------------------|----------|---------|--------
+Population/—         | 50       | —       | —
+Generations/Iterations | 200    | 500     | 300
+Mutation Rate        | 0.2      | 0.1     | 0.3
+Tournament Size      | 5        | —       | —
+Elitism Count        | 5        | —       | —
+Initial Temperature  | —        | 10,000  | —
+Cooling Rate         | —        | 0.995   | —
+Tabu List Size       | —        | —       | 30
+Neighbours/Iteration | —        | —       | 20
+
+Each algorithm is run once per experiment session (constrained by the computational time available on the development hardware). The fitness scores, clash counts, and execution times reported in Chapter Four are drawn from actual system execution logs on the Covenant University dataset. The greedy initial solution is also evaluated to establish a pre-optimisation baseline against which each algorithm's improvement can be measured.
+
+
+3.19 Summary
+
+This chapter has presented the full research methodology for the design and implementation of the hyper-heuristic university timetable generation system. The research adopts a mixed Design Science Research methodology combining applied design (the construction of the Time4Tables system) with evaluatory design (the systematic experimental comparison of three meta-heuristic algorithms). The chapter documented the data collection process, including an honest account of the dataset's limitations arising from fragmented institutional data sources and the use of supplementary estimated data. The system architecture, input/output design, database design, constraint model, fitness function formulation, algorithm designs (Genetic Algorithm, Simulated Annealing, Tabu Search), NLP parsing module, mutation operator, and evaluation strategy have all been detailed with reference to the actual implemented source code. Chapter Four will present the results obtained from running this system on the Covenant University dataset and will discuss the findings in relation to the research objectives and the existing literature.

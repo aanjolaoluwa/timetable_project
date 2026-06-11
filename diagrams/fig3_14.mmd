@@ -1,0 +1,39 @@
+classDiagram
+    class SchedulingEngine {
+        +load_dataset()
+        +generate_initial_solution()
+        +evaluate_timetable()
+    }
+    class GeneticAlgorithm {
+        +run_genetic_algorithm()
+    }
+    class SimulatedAnnealing {
+        +run_simulated_annealing()
+    }
+    class TabuSearch {
+        +run_tabu_search()
+    }
+    class NLPParser {
+        +parse_constraints()
+    }
+    class Database {
+        +init_db()
+    }
+    class TimetableEntry {
+        +course
+        +lecturer
+        +venue
+        +timeslot
+    }
+    class FastAPIApp {
+        +upload_dataset()
+        +run_scheduler()
+    }
+
+    SchedulingEngine <|-- GeneticAlgorithm : uses
+    SchedulingEngine <|-- SimulatedAnnealing : uses
+    SchedulingEngine <|-- TabuSearch : uses
+    NLPParser --> SchedulingEngine : constraints
+    FastAPIApp --> SchedulingEngine : invokes
+    FastAPIApp --> Database : interacts
+    Database --> TimetableEntry : stores

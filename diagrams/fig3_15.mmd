@@ -1,0 +1,22 @@
+graph TB
+    subgraph Frontend["Frontend Layer"]
+        Streamlit["Streamlit UI"]
+    end
+
+    subgraph Backend["Backend Layer"]
+        FastAPI["FastAPI / Python Core"]
+    end
+
+    subgraph Engine["Scheduling Engine"]
+        Algorithms["Heuristic Optimizers\n(GA, SA, Tabu Search)"]
+        NLP["NLP Constraint Parser"]
+    end
+
+    subgraph DataStore["Data Storage"]
+        SQLite["SQLite Database"]
+        Files["CSV and JSON Files"]
+    end
+
+    Frontend --> Backend
+    Backend --> Engine
+    Engine --> DataStore

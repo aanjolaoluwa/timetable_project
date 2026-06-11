@@ -1,0 +1,47 @@
+CHAPTER TWO
+LITERATURE REVIEW
+
+2.1 Preamble
+The area of university timetabling has undergone tremendous changes with the development of optimization techniques and artificial intelligence. This chapter reviews how timetabling problems have been addressed over time, focusing on meta-heuristics, hyper-heuristic algorithms, and the increasing prominence of natural language processing for constraint extraction. Key concepts, existing systems, and the current state of affairs are discussed in detail by drawing on recent works to identify trends and gaps. The aim is to set the stage for this project, which integrates rule-based NLP for handling user prompts with hyper-heuristics for smart and easy timetabling by all stakeholders.
+
+2.2 Review of University Course Timetabling Problems
+University course timetabling is the process of allocating lectures to time slots and rooms while satisfying hard constraints (e.g., no clashes for students or lecturers, respecting room capacity) while minimizing the violations of soft constraints (e.g., lecturer preferences, compact schedules). The problem is widely recognized as NP-hard, and real instances often include institutional rules that make exact mathematical methods impractical (Chen et al., 2021). The complexity lies in the large solution space and varying constraints across institutions, including multi-section courses and facility limitations (Rappos et al., 2022). As universities expand, modern timetabling problems increasingly require scalable and flexible approaches that can generate feasible schedules within reasonable computational times.
+
+2.3 Review of Heuristic and Meta-heuristic Approaches
+Heuristics and meta-heuristics have become the dominant approaches for solving intractably large timetabling instances. Unlike exact methods that guarantee optimal solutions but may take an eternity to run, meta-heuristics exchange guaranteed optimality for high-quality solutions generated in a reasonable amount of time.
+
+Genetic Algorithms (GAs) have been heavily utilized, relying on evolutionary principles like crossover and mutation to explore the search space. Implementations in recent years are often hybridized with local search methods to improve solution quality on large instances. For instance, Rezaeipanah et al. (2020) proposed a hybrid algorithm combining a parallel genetic algorithm with local search, achieving near-optimal solutions and significantly reducing constraint violations compared to standalone methods. Thakare (2020) demonstrated the efficacy of GAs in fully automated timetable generation systems, highlighting their ability to resolve complex scheduling conflicts.
+
+Simulated Annealing (SA) provides a single-solution trajectory search that relies on a temperature cooling schedule to escape local optima. SA generally requires fewer parameters to tune than GAs and is highly effective at refining solutions, especially when neighborhood structures are carefully tailored to the timetabling domain (Abdipoor et al., 2023).
+
+Tabu Search (TS) is another prominent technique, renowned for its use of memory structures (a tabu list) to prevent cycling back to recently visited solutions. This feature makes it highly efficient at escaping local optima. Comparisons across educational timetabling benchmarks consistently demonstrate that memory-based meta-heuristics can rapidly reduce soft constraint penalties (Abdipoor et al., 2025).
+
+2.4 Review of Hyper-heuristic Approaches
+While low-level meta-heuristics search directly for solutions, hyper-heuristics operate at a higher level of abstraction by either selecting or generating low-level heuristics. Selection hyper-heuristics adaptively choose which heuristic to apply at a given stage of the search process, making them highly flexible across different problem domains.
+
+Soria-Alcaraz et al. (2015) successfully demonstrated an iterated local search framework using an add-and-delete hyper-heuristic specifically for university course timetabling, proving that higher-level heuristic management outperforms isolated algorithms. Similarly, Iqbal et al. (2021) showed that hyper-heuristic approaches provide effective and robust solutions to university course timetabling because they dynamically adapt to the specific landscape of the problem being solved. More recently, Muklason et al. (2024) highlighted how generic hyper-heuristic systems can be deployed to handle university examinations and course scheduling by relying on a suite of foundational algorithms.
+
+2.5 Review of Natural Language Processing in Scheduling and Optimization
+Traditionally, administrators have been forced to input constraints into scheduling engines using rigid databases, specialized software, or spreadsheets. Natural Language Processing (NLP) is changing how constraints are specified, converting casual text into structured rules.
+
+Recent systematic work shows that rule-based NLP, employing techniques like regular expression (regex) pattern matching, remains a highly effective method for requirements formalization. Unlike generative language models which can sometimes hallucinate or misinterpret strict logical boundaries, deterministic rule-based parsing provides high accuracy within a predefined vocabulary. This ensures that explicit institutional rules, such as "No overlapping classes for lecturers," are translated perfectly into formal, machine-readable constraint objects (Aa et al., 2019). While deep learning has been applied to extract procedural constraints in fields like construction (Zhong et al., 2019), deterministic rule-based extraction is often preferred for scheduling prototyping because it avoids the probabilistic errors common in generative models and reduces computational overhead.
+
+2.6 Conceptual Review
+2.6.1 Hyper-heuristics
+Hyper-heuristics are search methods that choose or create heuristics to solve a problem instead of solving it directly. Selection hyper-heuristics are the most common type for timetabling and typically include a heuristic selection mechanism and a move acceptance criterion.
+
+2.6.2 Optimization and NP-Hard Problems
+Optimization entails selecting the best or nearly best option from a wide range of possibilities. As an NP-hard optimization problem, university course scheduling cannot be solved in polynomial time by any known exact algorithm (Song et al., 2018). Meta-heuristic approaches predominate due to this complexity, trading guaranteed optimality for "good enough" solutions found quickly.
+
+2.6.3 Web-based Timetabling Systems
+Modern web-based timetabling systems are increasingly shifting toward rapid prototyping frameworks natively integrated with Python's data science ecosystem. Frameworks like Streamlit (for the frontend) and FastAPI (for the backend) allow for seamless bridging between optimization engines and user interfaces. These setups provide automatic API documentation, interactive data visualization, and real-time schedule adjustments within a unified ecosystem, avoiding the heavy overhead of older architectures like Django (Lalitha et al., 2023).
+
+2.7 Existing Works and Gaps
+While individual metaheuristics have been thoroughly compared on common benchmarks, running multiple algorithms simultaneously to select the best solver—an approach akin to hyper-heuristics—provides a robust way to handle diverse constraint patterns. Furthermore, very few studies evaluate these algorithms when the constraints themselves are derived dynamically from natural language prompts instead of pre-defined structured data.
+
+Most natural-language-driven scheduling tools concentrate on simple meeting spaces rather than the intricate, multi-constraint university course scheduling problem. Additionally, not much research has been done on giving end-users interactive comparative feedback regarding which algorithm worked best for their particular prompt.
+
+2.8 Summary of Literature Review
+The review demonstrates that university course scheduling is a well-known NP-hard optimization problem. Due to this complexity, meta-heuristic approaches (GA, SA, TS) and hyper-heuristics have dominated the field, consistently producing high-quality timetables (Chen et al., 2021; Abdipoor et al., 2023). 
+
+Although these algorithms perform well when constraints are supplied in structured formats, very few studies have explored their behavior when constraints are extracted from natural language prompts using rule-based parsers. This project fills this gap by applying modern NLP techniques to convert free-text prompts into formal constraints, comparing the performance of three established algorithms (GA, SA, and TS) on the same prompt-derived instances, and presenting results via an interactive Streamlit web interface.
