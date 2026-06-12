@@ -9,3 +9,18 @@ timetables.db
 *.db
 *.tmp
 ~$*
+
+# Large document/binary files not needed for deployment
+*.docx
+*.pptx
+*.zip
+*.skill
+bsc-thesis-evaluator-extracted/
+build_chapters.py
+CHAPTER_1_REWRITTEN.txt
+CHAPTER_2_REWRITTEN.txt
+CHAPTER_3_REWRITTEN.txt
+CHAPTER_4_REWRITTEN.txt
+dissertation.txt
+docx_content.txt
+final_timetable.csv
